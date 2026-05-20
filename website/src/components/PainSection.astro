@@ -1,0 +1,101 @@
+---
+import de from '@content/de.json';
+import en from '@content/en.json';
+import BrandArrow from './icons/BrandArrow.astro';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+---
+<section
+  id="pain"
+  class="relative bg-ink-50 text-ink-900 py-32 lg:py-40"
+>
+  <!-- Dezente Brand-Arrows als Background-Watermarks -->
+  <div class="pointer-events-none absolute inset-0 opacity-50" aria-hidden="true">
+    <div class="absolute top-[12%] right-[6%] text-brand-100" style="transform: rotate(-12deg);">
+      <BrandArrow size={120} />
+    </div>
+    <div class="absolute bottom-[10%] left-[8%] text-brand-100" style="transform: rotate(28deg);">
+      <BrandArrow size={70} />
+    </div>
+  </div>
+
+  <div class="container-x relative">
+    <div class="max-w-4xl">
+      <!-- Kicker, klarer Abstand zur Headline -->
+      <div class="inline-flex items-center gap-2 rounded-full border border-ink-200 bg-white px-3 py-1 text-xs uppercase tracking-[0.18em] text-ink-500">
+        <span class="h-1.5 w-1.5 rounded-full bg-ink-400"></span>
+        <span data-i18n-key="pain.kicker">{dict.pain.kicker}</span>
+      </div>
+
+      <!-- Headline. Wipe-Reveal von links nach rechts beim Scrollen, pro Zeile gestaffelt. -->
+      <div class="mt-16 space-y-2">
+        <div
+          class="pain-line text-[clamp(2rem,5vw,4rem)] font-bold tracking-tight leading-[1.05] text-ink-300"
+          data-i18n-key="pain.line1"
+        >
+          {dict.pain.line1}
+        </div>
+        <div
+          class="pain-line text-[clamp(2rem,5vw,4rem)] font-bold tracking-tight leading-[1.05] text-ink-500"
+          data-i18n-key="pain.line2"
+        >
+          {dict.pain.line2}
+        </div>
+        <div
+          class="pain-line text-[clamp(2rem,5vw,4rem)] font-bold tracking-tight leading-[1.05] text-ink-700"
+          data-i18n-key="pain.line3"
+        >
+          {dict.pain.line3}
+        </div>
+      </div>
+
+      <p class="mt-14 max-w-2xl text-lg text-ink-600 sm:text-xl leading-relaxed text-balance" data-i18n-key="pain.body">
+        {dict.pain.body}
+      </p>
+
+      <div class="mt-16 flex items-start gap-4">
+        <span
+          class="text-[clamp(2.5rem,6vw,5rem)] font-bold tracking-tight text-brand-600 leading-none"
+          data-i18n-key="pain.punchline"
+        >
+          {dict.pain.punchline}
+        </span>
+        <span class="text-brand-600 mt-[0.1em]">
+          <BrandArrow size={36} />
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Pain-Zeilen Reveal — additiv auf ALLEN Viewports, KEIN GSAP.
+  // Zeilen sind per CSS sichtbar (opacity:1). IntersectionObserver fügt nur .reveal-play
+  // hinzu (einmaliges Fade-Up). Schlägt JS/IO fehl, bleibt der Inhalt trotzdem sichtbar.
+  const prefersReduced = () =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const setup = () => {
+    const lines = Array.from(document.querySelectorAll<HTMLElement>('.pain-line'));
+    if (lines.length === 0) return;
+    if (prefersReduced()) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-play');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    lines.forEach((el) => obs.observe(el));
+  };
+
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(setup);
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(setup), { once: true });
+  }
+</script>

@@ -1,0 +1,75 @@
+@import url('https://rsms.me/inter/inter.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* clip statt hidden: verhindert horizontalen Scroll, OHNE position:sticky zu brechen
+       (overflow:hidden würde einen Scroll-Container erzeugen und Sticky kaputtmachen). */
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-ink-50 text-ink-900 font-sans;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  /* iOS-Robustheit: Sektionen + Reveal-Content sind IMMER sichtbar (CSS-Default).
+     Kein JS ist dafür zuständig, Inhalte sichtbar zu machen. Animationen sind
+     rein additiv: .reveal-play spielt einmal eine Fade-Up-Keyframe ab; der
+     Ruhezustand bleibt opacity:1. Schlägt JS fehl, ist der Inhalt trotzdem da. */
+  section {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  .reveal-play {
+    animation: revealUp 0.7s ease-out;
+  }
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-play { animation: none; }
+  }
+  ::selection {
+    background: rgba(89, 35, 194, 0.25);
+    color: inherit;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-12;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold
+           sm:px-6 sm:py-3 sm:text-sm
+           bg-brand-600 text-white shadow-glow-sm transition-all
+           hover:bg-brand-700 hover:shadow-glow active:scale-95
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-600/30;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold
+           sm:px-6 sm:py-3 sm:text-sm
+           bg-white text-ink-900 border border-ink-200 transition-all
+           hover:border-brand-400 hover:text-brand-700 active:scale-95
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-600/30;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-base font-semibold
+           sm:px-6 sm:py-3 sm:text-sm
+           bg-transparent border border-white/20 text-white transition-all
+           hover:bg-white/5 hover:border-white/40 active:scale-95
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30;
+  }
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-2xl border border-white/20 shadow-glass;
+  }
+  .text-balance { text-wrap: balance; }
+}

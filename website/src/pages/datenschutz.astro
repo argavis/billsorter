@@ -1,0 +1,83 @@
+---
+import Base from '@/layouts/Base.astro';
+
+const lang: 'de' | 'en' = 'de';
+---
+<Base lang={lang} title="Datenschutz">
+  <article class="container-x py-32 prose prose-ink max-w-3xl">
+    <h1 class="text-sect-1 font-bold">Datenschutzerklärung</h1>
+    <p class="text-ink-500 mt-2">Stand: <span class="placeholder">[Datum]</span></p>
+
+    <h2 class="mt-12">1. Verantwortlicher</h2>
+    <p>
+      <strong>ARGAVIS</strong> — Einzelunternehmen<br />
+      <span class="placeholder">[Vor- und Nachname]</span><br />
+      <span class="placeholder">[Anschrift]</span><br />
+      E-Mail: support@billsorter.app
+    </p>
+
+    <h2 class="mt-8">2. Verarbeitete Daten</h2>
+    <p>
+      BillSorter ist eine Desktop-Anwendung. Die meisten Daten bleiben lokal auf deinem Gerät:
+    </p>
+    <ul>
+      <li>IMAP-Zugangsdaten (verschlüsselt im OS-Schlüsselbund)</li>
+      <li>E-Mail-Inhalte und Anhänge (nur lokal verarbeitet)</li>
+      <li>Konfigurationsdaten (lokal als JSON gespeichert)</li>
+    </ul>
+    <p>An unsere Backend-Server übertragen wir nur:</p>
+    <ul>
+      <li><strong>Device-ID-Hash</strong> (HMAC, irreversibel) — zur Lizenzprüfung</li>
+      <li><strong>App-Version + OS</strong> — für Diagnose</li>
+      <li><strong>Betreff, Absender, Dateiname</strong> einzelner Anhänge — zur KI-Klassifizierung
+        via Anthropic. Niemals der Anhangs-Inhalt selbst.</li>
+      <li><strong>E-Mail-Adresse</strong> (nur beim kostenpflichtigen Abonnement) — über Stripe Checkout</li>
+    </ul>
+
+    <h2 class="mt-8">3. Rechtsgrundlage</h2>
+    <p>
+      Die Verarbeitung erfolgt zur Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) sowie zur Wahrung
+      berechtigter Interessen an Lizenz-Schutz und Missbrauchs-Prävention (Art. 6 Abs. 1 lit. f DSGVO).
+    </p>
+
+    <h2 class="mt-8">4. Auftragsverarbeiter</h2>
+    <p>Wir setzen folgende Dienstleister ein:</p>
+    <ul>
+      <li><strong>Cloudflare, Inc.</strong> (USA) — Hosting des Backends und der Website. Auftragsverarbeitungsvertrag (AVV) und Standardvertragsklauseln liegen vor.</li>
+      <li><strong>Stripe Payments Europe Ltd</strong> (Irland) — Zahlungsabwicklung. Es gilt deren <a href="https://stripe.com/de/privacy" class="text-brand-700" target="_blank" rel="noopener">Datenschutzerklärung</a>.</li>
+      <li><strong>Anthropic, PBC</strong> (USA) — KI-Klassifizierung. AVV und Standardvertragsklauseln liegen vor.</li>
+    </ul>
+
+    <h2 class="mt-8">5. Speicherdauer</h2>
+    <p>
+      Lizenz- und Geräte-Daten speichern wir, solange ein aktives Abonnement oder eine offene Testphase
+      besteht, plus 6 Monate für Buchhaltungszwecke. Klassifizierungs-Anfragen werden anonymisiert
+      geloggt und nach 90 Tagen gelöscht.
+    </p>
+
+    <h2 class="mt-8">6. Deine Rechte</h2>
+    <p>
+      Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+      Datenübertragbarkeit sowie Widerspruch. Schreib uns an
+      <a href="mailto:support@billsorter.app" class="text-brand-700">support@billsorter.app</a>.
+    </p>
+    <p>
+      Beschwerderecht bei der Aufsichtsbehörde:
+      <span class="placeholder">[zuständige Datenschutz-Behörde des Bundeslandes]</span>.
+    </p>
+
+    <h2 class="mt-8">7. Cookies</h2>
+    <p>
+      Die Website billsorter.app setzt nur ein technisch notwendiges Cookie zur Sprachauswahl.
+      Kein Tracking, kein Analytics.
+    </p>
+
+    <a href="/" class="mt-12 inline-block text-brand-700 hover:underline">← Home</a>
+  </article>
+  <style>
+    .placeholder { background: #fef3c7; padding: 2px 6px; border-radius: 4px; color: #92400e; font-family: monospace; font-size: 0.9em; }
+    .prose h2 { font-size: 1.5rem; font-weight: 700; }
+    .prose p, .prose ul { line-height: 1.7; }
+    .prose ul { padding-left: 1.25rem; list-style: disc; }
+  </style>
+</Base>

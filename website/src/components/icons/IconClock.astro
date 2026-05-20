@@ -1,0 +1,12 @@
+---
+type Props = { class?: string };
+const { class: cls = '' } = Astro.props;
+---
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+  fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+  class={cls} aria-hidden="true">
+  <circle cx="24" cy="24" r="20" />
+  <path d="M24 12 L24 24 L33 28" />
+  <!-- Brand-Arrow als "fast forward" oben rechts -->
+  <path d="M34 8 L42 4 L42 11 Z" fill="#5923c2" stroke="none" />
+</svg>

@@ -1,0 +1,19 @@
+---
+// Brand-Arrow wie im Logo-Icon (pixel-verifiziert).
+// Rechtwinkliges Dreieck mit rechtem Winkel an der UNTEREN-LINKEN Ecke.
+// Linke Cathete vertikal, untere Cathete horizontal, Hypotenuse von oben-links nach unten-rechts.
+type Props = { class?: string; size?: number };
+const { class: cls = '', size = 14 } = Astro.props;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 14 14"
+  fill="currentColor"
+  class={cls}
+  aria-hidden="true"
+>
+  <!-- bottom-left (right angle, 2,12) → top-left (2,2) → bottom-right (12,12) → Z back to (2,12) -->
+  <path d="M2 12 L2 2 L12 12 Z" />
+</svg>

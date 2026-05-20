@@ -1,0 +1,70 @@
+appId: de.argavis.billsorter
+productName: BillSorter
+copyright: Copyright © 2026 ARGAVIS
+artifactName: BillSorter-${version}-${os}-${arch}.${ext}
+
+directories:
+  buildResources: resources
+  output: release/${version}
+
+files:
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!electron/*"
+  - "!shared/*"
+  - "!{electron.vite.config.ts,electron-builder.yml,tsconfig*.json,vite.config.ts,.eslintrc.cjs,.prettierrc,.prettierignore,.editorconfig,dev-app-update.yml,CHANGELOG.md,README.md}"
+  - "!{.env,.env.*,.npmrc,pnpm-lock.yaml,yarn.lock,package-lock.json}"
+  - out/**/*
+
+extraResources:
+  - from: ../app/python/dist/billsorter-sidecar
+    to: sidecar/billsorter-sidecar
+  - from: resources/jwt-public-key.pem
+    to: jwt-public-key.pem
+
+asarUnpack:
+  - resources/**
+
+protocols:
+  - name: BillSorter
+    schemes:
+      - billsorter
+
+mac:
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch: [universal]
+  identity: null  # unsigned for MVP
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  notarize: false
+  icon: resources/icon.png
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+  artifactName: BillSorter-${version}.dmg
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: resources/icon.png
+  verifyUpdateCodeSignature: false
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: BillSorter
+  artifactName: BillSorter-Setup-${version}.exe
+
+publish: null  # Auto-Update kommt v1.1

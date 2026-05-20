@@ -1,0 +1,42 @@
+---
+// Auto-Scan — Briefumschlag mit Scan-Beam + Lupe.
+// Brand-Familie: 64×64, stroke=currentColor, outline, Logo-Dreieck als Akzent.
+type Props = { class?: string };
+const { class: cls = '' } = Astro.props;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={`brand-icon ${cls}`}
+  aria-hidden="true"
+>
+  <!-- Envelope -->
+  <rect x="6" y="16" width="42" height="32" rx="3" />
+  <!-- V-Flap inside -->
+  <path d="M6 19 L27 33 L48 19" />
+  <!-- Scan-Beam (dashed, läuft animiert) -->
+  <line class="scan-beam" x1="10" y1="42" x2="44" y2="42" stroke-dasharray="2 3" />
+  <!-- Magnifying glass -->
+  <circle cx="46" cy="44" r="6" />
+  <line x1="50.5" y1="48.5" x2="55" y2="53" stroke-width="2" />
+  <!-- Brand-Dreieck oben rechts (Logo-Geometrie) -->
+  <path d="M50 14 L50 6 L58 14 Z" fill="currentColor" stroke="none" />
+</svg>
+
+<style>
+  .brand-icon .scan-beam {
+    animation: scan-beam-shift 2.2s linear infinite;
+  }
+  @keyframes scan-beam-shift {
+    0%   { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -20; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-icon .scan-beam { animation: none; }
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+// Multi-Provider — Zentraler Hub mit Brand-Dreieck + 4 Provider-Umschläge im Netz.
+// Brand-Familie: 64×64, stroke=currentColor, outline, Logo-Dreieck als Akzent.
+type Props = { class?: string };
+const { class: cls = '' } = Astro.props;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={`brand-icon ${cls}`}
+  aria-hidden="true"
+>
+  <!-- Connection lines (dashed, von Hub zu jedem Provider) -->
+  <line class="link link-1" x1="26" y1="28" x2="16" y2="14" stroke-dasharray="2 2.5" />
+  <line class="link link-2" x1="38" y1="28" x2="48" y2="14" stroke-dasharray="2 2.5" />
+  <line class="link link-3" x1="26" y1="36" x2="16" y2="50" stroke-dasharray="2 2.5" />
+  <line class="link link-4" x1="38" y1="36" x2="48" y2="50" stroke-dasharray="2 2.5" />
+
+  <!-- 4 Provider-Umschläge an den Ecken -->
+  <g>
+    <rect x="6" y="6" width="16" height="11" rx="1.5" />
+    <path d="M6 8.5 L14 14 L22 8.5" />
+  </g>
+  <g>
+    <rect x="42" y="6" width="16" height="11" rx="1.5" />
+    <path d="M42 8.5 L50 14 L58 8.5" />
+  </g>
+  <g>
+    <rect x="6" y="47" width="16" height="11" rx="1.5" />
+    <path d="M6 49.5 L14 55 L22 49.5" />
+  </g>
+  <g>
+    <rect x="42" y="47" width="16" height="11" rx="1.5" />
+    <path d="M42 49.5 L50 55 L58 49.5" />
+  </g>
+
+  <!-- Zentraler Hub -->
+  <circle cx="32" cy="32" r="7" />
+  <!-- Brand-Dreieck im Hub (Logo-Geometrie) -->
+  <path d="M29 35 L29 29 L35 35 Z" fill="currentColor" stroke="none" />
+</svg>
+
+<style>
+  .brand-icon .link {
+    animation: link-flow 2.4s linear infinite;
+  }
+  .brand-icon .link-2 { animation-delay: 0.3s; }
+  .brand-icon .link-3 { animation-delay: 0.6s; }
+  .brand-icon .link-4 { animation-delay: 0.9s; }
+  @keyframes link-flow {
+    0%   { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -18; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-icon .link { animation: none; }
+  }
+</style>

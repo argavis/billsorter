@@ -1,0 +1,37 @@
+---
+import Base from '@/layouts/Base.astro';
+import de from '@content/de.json';
+import en from '@content/en.json';
+
+const lang: 'de' | 'en' = 'de';
+const dict = lang === 'de' ? de : en;
+---
+<Base lang={lang} title={dict.install_mac.title}>
+  <article class="container-x py-32 max-w-3xl">
+    <h1 class="text-sect-1 font-bold" data-i18n-key="install_mac.title">{dict.install_mac.title}</h1>
+    <p class="mt-4 text-lg text-ink-500" data-i18n-key="install_mac.subtitle">{dict.install_mac.subtitle}</p>
+
+    <ol class="mt-12 space-y-8 text-lg">
+      <li class="flex gap-6">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">1</span>
+        <span data-i18n-key="install_mac.step1">{dict.install_mac.step1}</span>
+      </li>
+      <li class="flex gap-6">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">2</span>
+        <span data-i18n-key="install_mac.step2">{dict.install_mac.step2}</span>
+      </li>
+      <li class="flex gap-6">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">3</span>
+        <span data-i18n-key="install_mac.step3">{dict.install_mac.step3}</span>
+      </li>
+      <li class="flex gap-6">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">4</span>
+        <span data-i18n-key="install_mac.step4">{dict.install_mac.step4}</span>
+      </li>
+    </ol>
+
+    <p class="mt-12 rounded-2xl bg-brand-50 p-6 text-sm text-brand-800" data-i18n-key="install_mac.note">{dict.install_mac.note}</p>
+
+    <a href="/" class="mt-12 inline-block text-brand-700 hover:underline">← Home</a>
+  </article>
+</Base>

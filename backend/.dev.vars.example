@@ -1,0 +1,21 @@
+# Lokale Dev-Secrets — kopieren zu `.dev.vars`, dort echte Werte einsetzen.
+# `.dev.vars` ist gitignored. Production-Secrets werden via `wrangler secret put NAME --env production` gesetzt.
+
+# Stripe (Test-Mode-Keys für dev)
+STRIPE_SECRET_KEY=sk_test_REPLACE_ME
+STRIPE_WEBHOOK_SECRET=whsec_REPLACE_ME
+STRIPE_PRICE_ID=price_REPLACE_ME
+
+# JWT — Ed25519 Keypair (PEM-Format, PKCS8/SPKI). Newlines als literale \n im Wert,
+# oder als Multi-Line-Eintrag (wrangler dev unterstützt heredoc nicht — siehe README).
+JWT_PRIVATE_KEY_PEM="-----BEGIN PRIVATE KEY-----\nREPLACE\n-----END PRIVATE KEY-----"
+JWT_PUBLIC_KEY_PEM="-----BEGIN PUBLIC KEY-----\nREPLACE\n-----END PUBLIC KEY-----"
+
+# Device-Binding HMAC-Salt (32+ random bytes, base64)
+APP_DEVICE_SALT=REPLACE_WITH_BASE64_32_RANDOM_BYTES
+
+# Admin-Endpoint Bearer-Token (lang + random)
+ADMIN_TOKEN=REPLACE_WITH_LONG_RANDOM_TOKEN
+
+# Anthropic API-Key — zentral, alle User laufen darüber
+ANTHROPIC_API_KEY=sk-ant-REPLACE_ME

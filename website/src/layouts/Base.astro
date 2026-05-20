@@ -1,0 +1,90 @@
+---
+import '@/styles/global.css';
+import Nav from '@components/Nav.astro';
+import de from '@content/de.json';
+import en from '@content/en.json';
+
+type Props = {
+  title?: string;
+  description?: string;
+  lang?: 'de' | 'en';
+  bare?: boolean;
+};
+
+const lang = Astro.props.lang ?? 'de';
+const dict = lang === 'de' ? de : en;
+
+const title = Astro.props.title ?? dict.meta.title;
+const description = Astro.props.description ?? dict.meta.description;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Globaler Error-Logger: läuft als allererstes, fängt JS-Fehler die sonst
+         alles nach dem Hero blockieren würden (iOS-Debugging). -->
+    <script is:inline>
+      window.onerror = function (msg, src, line, col) {
+        console.log('ERROR:', msg, '@', (src || '').split('/').pop() + ':' + line + ':' + col);
+      };
+      window.addEventListener('unhandledrejection', function (e) {
+        console.log('PROMISE REJECTION:', e.reason && (e.reason.message || e.reason));
+      });
+    </script>
+    <meta name="theme-color" content="#5923c2" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BillSorter" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={`https://billsorter.app${Astro.url.pathname}`} />
+    <meta property="og:image" content="https://billsorter.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://billsorter.app/og-image.png" />
+    <link rel="preconnect" href="https://rsms.me" crossorigin />
+  </head>
+  <body class="bg-ink-950 text-white">
+    {!Astro.props.bare && <Nav lang={lang} />}
+    <main>
+      <slot />
+    </main>
+
+    <!-- Safety-Net OHNE Modul-Imports (is:inline) — kann nicht durch Import-Fehler brechen.
+         Erzwingt nach 1.5s Sichtbarkeit aller Reveal-Elemente, falls eine Animation hängt. -->
+    <script is:inline>
+      setTimeout(function () {
+        var els = document.querySelectorAll('.pain-line, .solution-line, .feature-card');
+        for (var i = 0; i < els.length; i++) {
+          var el = els[i];
+          if (parseFloat(getComputedStyle(el).opacity) < 1) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            el.style.clipPath = 'none';
+          }
+        }
+      }, 1500);
+    </script>
+
+    <script>
+      // i18n-Toggle (Modul-Script). Falls dieser Import auf iOS scheitert, bleibt die Seite
+      // dank CSS-Defaults + is:inline-Safety-Net oben trotzdem voll sichtbar.
+      import { hydrate, setLang, type Locale } from '@lib/i18n';
+      try { hydrate(); } catch (e) { console.warn('i18n hydrate failed', e); }
+      document.querySelectorAll<HTMLButtonElement>('[data-lang-btn]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const next = btn.dataset.langBtn as Locale;
+          try { setLang(next); } catch (e) { console.warn('setLang failed', e); }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+---
+<div
+  role="group"
+  aria-label="Sprache wählen / Choose language"
+  class="inline-flex items-center gap-0.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md p-0.5 text-xs"
+>
+  <button
+    type="button"
+    data-lang-btn="de"
+    data-active={String(lang === 'de')}
+    aria-pressed={String(lang === 'de')}
+    class="rounded-full px-2.5 py-1 transition-all data-[active=true]:bg-white data-[active=true]:text-ink-900 data-[active=false]:text-white/70 data-[active=false]:hover:text-white"
+  >
+    🇩🇪 DE
+  </button>
+  <button
+    type="button"
+    data-lang-btn="en"
+    data-active={String(lang === 'en')}
+    aria-pressed={String(lang === 'en')}
+    class="rounded-full px-2.5 py-1 transition-all data-[active=true]:bg-white data-[active=true]:text-ink-900 data-[active=false]:text-white/70 data-[active=false]:hover:text-white"
+  >
+    🇬🇧 EN
+  </button>
+</div>

@@ -1,0 +1,326 @@
+---
+import de from '@content/de.json';
+import en from '@content/en.json';
+import BrandArrow from './icons/BrandArrow.astro';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+
+// 9 Cards mit Ziel-Monat (0=Jan, 1=Feb, 2=Mär)
+const cards = [
+  { label: 'Rechnung 1', amount: '47,11 €', date: '15.01.2026', month: 0 },
+  { label: 'Rechnung 2', amount: '28,50 €', date: '22.01.2026', month: 0 },
+  { label: 'Rechnung 3', amount: '11,50 €', date: '09.01.2026', month: 0 },
+  { label: 'Rechnung 4', amount: '15,00 €', date: '18.02.2026', month: 1 },
+  { label: 'Rechnung 5', amount: '20,00 €', date: '07.02.2026', month: 1 },
+  { label: 'Rechnung 6', amount: '6,00 €',  date: '17.02.2026', month: 1 },
+  { label: 'Rechnung 7', amount: '4,00 €',  date: '03.03.2026', month: 2 },
+  { label: 'Rechnung 8', amount: '12,00 €', date: '14.03.2026', month: 2 },
+  { label: 'Rechnung 9', amount: '14,00 €', date: '21.03.2026', month: 2 },
+];
+
+const folders = [
+  { label: dict.hero.folder_jan, year: '2026', month: 0 },
+  { label: dict.hero.folder_feb, year: '2026', month: 1 },
+  { label: dict.hero.folder_mar, year: '2026', month: 2 },
+];
+---
+<!--
+  Section 2 — Magnetic Sort.
+  Desktop: Sticky-Scroll-Cinematic mit GSAP, Cards fliegen aus Chaos in Ordner.
+  Mobile: vertikaler Flow mit IntersectionObserver — Cards droppen einzeln in Ordner.
+-->
+<section id="magnetic-sort" class="relative bg-ink-950 text-white md:h-[300dvh]">
+  <div class="relative w-full overflow-hidden py-20 md:sticky md:top-0 md:flex md:h-[100dvh] md:items-center md:py-0">
+
+    <!-- Ambient glow -->
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-700/25 blur-[140px]"></div>
+    </div>
+
+    <!-- Noise -->
+    <div
+      class="pointer-events-none absolute inset-0 mix-blend-overlay opacity-[0.06]"
+      style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"
+      aria-hidden="true"
+    ></div>
+
+    <div class="container-x relative grid w-full grid-cols-1 gap-10 md:grid-cols-2 md:gap-12">
+      <!-- LEFT: Cards-Stage. Mobile = absolute Overlay über den Ordnern (Karten fliegen rein).
+           Desktop = relative Chaos-Stage. -->
+      <div
+        id="sort-cards-stage"
+        class="pointer-events-none absolute inset-0 z-20 md:relative md:inset-auto md:z-auto md:block md:h-[600px]"
+        aria-hidden="true"
+      >
+        {cards.map((c, i) => (
+          <div
+            class="sort-card relative w-full md:absolute md:left-1/2 md:top-1/2 md:w-[200px]"
+            data-idx={i}
+            data-month={c.month}
+          >
+            <div class="relative rounded-xl border border-white/10 bg-white px-5 py-4 text-ink-900 shadow-xl md:px-4 md:py-3">
+              <div class="flex items-start justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-700 md:text-[10px]">Invoice</span>
+                <span class="text-[10px] text-ink-400 tabular-nums md:text-[9px]">{c.date}</span>
+              </div>
+              <div class="mt-2 flex items-end justify-between">
+                <div>
+                  <div class="text-base font-semibold tracking-tight md:text-sm">{c.label}</div>
+                </div>
+                <div class="text-lg font-bold tabular-nums md:text-base">{c.amount}</div>
+              </div>
+              <div class="mt-2 flex items-center gap-1 border-t border-ink-100 pt-2 text-[10px] text-ink-500 md:text-[9px]">
+                <span class="text-brand-600"><BrandArrow size={8} /></span>
+                <span>PDF</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- RIGHT: Folder-Targets -->
+      <div class="relative flex flex-col items-center justify-center gap-4 md:h-[600px] md:gap-6">
+        {folders.map((f, i) => (
+          <div
+            class="folder-target relative w-full max-w-sm md:max-w-xs"
+            data-folder={i}
+            id={`folder-${i}`}
+          >
+            <!-- Folder Front + Lid (Tab entfernt) -->
+            <div class="relative overflow-hidden rounded-2xl bg-brand-600 px-5 py-4 shadow-glow-sm md:rounded-xl">
+              <!-- Lid (animiert auf/zu beim card-arrival auf Desktop) -->
+              <div
+                class="folder-lid pointer-events-none absolute inset-x-0 top-0 h-3 origin-top bg-brand-500"
+                style="transform: scaleY(1);"
+              ></div>
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 backdrop-blur-md md:h-9 md:w-9">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-5 w-5 text-white md:h-4 md:w-4">
+                      <path d="M3 7 L3 19 L21 19 L21 9 L11 9 L9 7 Z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-base font-semibold text-white md:text-sm">{f.label} {f.year}</div>
+                    <div class="folder-count text-xs text-white/65 md:text-[10px]" data-count="0">0 Rechnungen</div>
+                  </div>
+                </div>
+                <span class="text-white/40"><BrandArrow size={14} /></span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Outro-Text — Mobile: normaler Block unter den Ordnern. Desktop: absolute, animiert. -->
+    <div
+      id="sort-outro"
+      class="pointer-events-none z-10 mt-16 text-center md:absolute md:inset-x-0 md:bottom-12 md:mt-0 md:opacity-0"
+      aria-hidden="true"
+    >
+      <p class="text-sect-1 font-bold tracking-tight text-white" data-i18n-key="sort.outro">{dict.sort.outro}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Mobile-only: Ordner zuerst sichtbar. Karten sind unsichtbar links außerhalb,
+     fliegen einzeln in ihren Ziel-Ordner (JS positioniert top), werden "absorbiert".
+     Kein GSAP — reine CSS-Transitions, getriggert per IntersectionObserver. */
+  @media (max-width: 767px) {
+    #sort-cards-stage {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .sort-card {
+      position: absolute;
+      left: 0;
+      right: 0;
+      width: auto;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0;
+      transform: translateX(-130vw);
+      transition: transform 0.6s cubic-bezier(0.34, 1.15, 0.64, 1), opacity 0.3s ease-out;
+      will-change: transform, opacity;
+    }
+    .sort-card.flying {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .sort-card.absorbed {
+      opacity: 0;
+      transform: translateX(0) scale(0.5);
+      transition: opacity 0.45s ease-in, transform 0.45s ease-in;
+    }
+    .folder-target {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .folder-target.popped {
+      transform: scale(1.06);
+    }
+  }
+</style>
+
+<script>
+  const prefersReducedMotion = () =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const isMobile = () =>
+    typeof window !== 'undefined' &&
+    (window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches);
+
+  const isIOS = () =>
+    typeof navigator !== 'undefined' &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
+  // ───── MOBILE/iOS: Ordner zuerst sichtbar, Karten fliegen rein (kein GSAP) ─────
+  const setupMobileSort = () => {
+    const section = document.getElementById('magnetic-sort');
+    const stage = document.getElementById('sort-cards-stage');
+    if (!section || !stage) return;
+    const cards = Array.from(stage.querySelectorAll<HTMLElement>('.sort-card'));
+    if (cards.length === 0) return;
+    const folders = [0, 1, 2].map((i) => document.getElementById(`folder-${i}`));
+    const folderCounts: Record<number, number> = { 0: 0, 1: 0, 2: 0 };
+
+    // Jede Karte vertikal auf Höhe ihres Ziel-Ordners positionieren (links außerhalb).
+    const positionCards = () => {
+      const stageRect = stage.getBoundingClientRect();
+      cards.forEach((card) => {
+        const month = Number(card.dataset.month ?? 0);
+        const folder = folders[month];
+        if (!folder) return;
+        const fRect = folder.getBoundingClientRect();
+        const top = fRect.top - stageRect.top + fRect.height / 2 - card.offsetHeight / 2;
+        card.style.top = `${Math.max(0, top)}px`;
+      });
+    };
+
+    let played = false;
+    const trigger = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || played) return;
+          played = true;
+          positionCards();
+          cards.forEach((card, i) => {
+            setTimeout(() => {
+              positionCards();
+              card.classList.add('flying');
+              // Nach dem Einfliegen: Ordner poppt, Count++, Karte wird absorbiert.
+              setTimeout(() => {
+                const month = Number(card.dataset.month ?? 0);
+                const folder = folders[month];
+                folderCounts[month] = (folderCounts[month] ?? 0) + 1;
+                const countEl = folder?.querySelector<HTMLElement>('.folder-count');
+                if (countEl) {
+                  countEl.textContent = `${folderCounts[month]} Rechnung${folderCounts[month] === 1 ? '' : 'en'}`;
+                }
+                if (folder) {
+                  folder.classList.add('popped');
+                  setTimeout(() => folder.classList.remove('popped'), 300);
+                }
+                card.classList.add('absorbed');
+              }, 620);
+            }, i * 320);
+          });
+          trigger.disconnect();
+        });
+      },
+      { threshold: 0.25 }
+    );
+    trigger.observe(section);
+    window.addEventListener('resize', positionCards, { passive: true });
+  };
+
+  // ───── DESKTOP: GSAP Sticky-Scroll-Choreographie (dynamisch importiert) ─────
+  const setupDesktopSort = async () => {
+    try {
+      const stage = document.getElementById('sort-cards-stage');
+      const outro = document.getElementById('sort-outro');
+      const section = document.getElementById('magnetic-sort');
+      if (!stage || !outro || !section) return;
+      const cards = Array.from(stage.querySelectorAll<HTMLElement>('.sort-card'));
+      if (cards.length === 0) return;
+
+      const { default: gsap } = await import('gsap');
+      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Initial: Chaos-Layout
+      const rect = stage.getBoundingClientRect();
+      const rx = rect.width * 0.32;
+      const ry = rect.height * 0.30;
+      cards.forEach((card, i) => {
+        const angle = (i / cards.length) * Math.PI * 2 + (i % 2 === 0 ? 0.3 : -0.4);
+        const x = Math.cos(angle) * rx + (Math.random() - 0.5) * 20;
+        const y = Math.sin(angle) * ry + (Math.random() - 0.5) * 20;
+        const rot = (Math.random() - 0.5) * 22;
+        gsap.set(card, { x, y, rotation: rot, opacity: 0, xPercent: -50, yPercent: -50 });
+      });
+      gsap.set('#sort-outro', { opacity: 0, y: 20 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: section, start: 'top top', end: 'bottom bottom', scrub: 0.8 },
+      });
+
+      tl.to(cards, { opacity: 1, duration: 0.5, stagger: { each: 0.04, from: 'random' }, ease: 'power2.out' }, 0);
+
+      const folderEls = Array.from(document.querySelectorAll<HTMLElement>('.folder-target'));
+      const stageRect = stage.getBoundingClientRect();
+
+      cards.forEach((card, idx) => {
+        const month = Number(card.dataset.month ?? 0);
+        const folder = folderEls[month];
+        if (!folder) return;
+        const fRect = folder.getBoundingClientRect();
+        const tx = fRect.left + fRect.width / 2 - (stageRect.left + stageRect.width / 2);
+        const ty = fRect.top + fRect.height / 2 - (stageRect.top + stageRect.height / 2);
+        const flightStart = 0.6 + (idx / cards.length) * 0.4;
+        const flightEnd = flightStart + 0.6;
+        tl.to(card, { x: tx, y: ty, rotation: 0, scale: 0.18, opacity: 0.0, ease: 'power2.in' }, flightStart);
+        const lid = folder.querySelector<HTMLElement>('.folder-lid');
+        if (lid) {
+          tl.to(lid, { scaleY: 1.6, duration: 0.08, ease: 'power2.out' }, flightEnd - 0.05);
+          tl.to(lid, { scaleY: 1.0, duration: 0.15, ease: 'power2.in' }, flightEnd + 0.05);
+        }
+        const countEl = folder.querySelector<HTMLElement>('.folder-count');
+        if (countEl) {
+          tl.call(() => {
+            const cur = Number(countEl.dataset.count ?? '0') + 1;
+            countEl.dataset.count = String(cur);
+            countEl.textContent = `${cur} Rechnung${cur === 1 ? '' : 'en'}`;
+          }, [], flightEnd);
+        }
+      });
+
+      tl.to('#sort-outro', { opacity: 1, y: 0, ease: 'power2.out' }, '>-0.2');
+    } catch (e) {
+      console.warn('desktop sort setup failed', e);
+    }
+  };
+
+  const setup = () => {
+    if (prefersReducedMotion()) return;
+    if (isMobile() || isIOS()) {
+      setupMobileSort();
+    } else {
+      setupDesktopSort().catch((e) => console.warn('magnetic-sort desktop failed', e));
+    }
+  };
+
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(setup);
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(setup), { once: true });
+  }
+</script>

@@ -1,0 +1,23 @@
+---
+import Base from '@/layouts/Base.astro';
+import Hero from '@components/Hero.astro';
+import MagneticSort from '@components/MagneticSort.astro';
+import PainSection from '@components/PainSection.astro';
+import SolutionSection from '@components/SolutionSection.astro';
+import FeatureScroller from '@components/FeatureScroller.astro';
+import HowItWorks from '@components/HowItWorks.astro';
+import PricingCard from '@components/PricingCard.astro';
+import Footer from '@components/Footer.astro';
+
+const lang: 'de' | 'en' = 'de';
+---
+<Base lang={lang}>
+  <Hero lang={lang} />
+  <MagneticSort lang={lang} />
+  <PainSection lang={lang} />
+  <SolutionSection lang={lang} />
+  <FeatureScroller lang={lang} />
+  <HowItWorks lang={lang} />
+  <PricingCard lang={lang} />
+  <Footer lang={lang} />
+</Base>

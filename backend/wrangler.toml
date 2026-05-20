@@ -1,0 +1,65 @@
+name = "billsorter-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-15"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# ───── DEFAULT (dev) ─────
+# Bindings hier sind für `wrangler dev` (lokal).
+# Production-Bindings stehen unter [env.production] weiter unten.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "billsorter-dev"
+# Lokale Database-ID: wird beim `wrangler d1 create billsorter-dev` generiert.
+# Trag sie hier ein, sobald du die DB angelegt hast:
+database_id = "8ae26e8c-8e1c-4129-bd51-356e033e23fa"
+migrations_dir = "src/db/migrations"
+
+[vars]
+ENVIRONMENT = "development"
+WEB_URL = "http://localhost:8788"
+API_URL = "http://localhost:8787"
+APP_DEEP_LINK_SCHEME = "billsorter"
+TRIAL_DAYS = "7"
+GRACE_DAYS = "7"
+PLAN_INTERVAL_DAYS = "30"
+
+# Secrets (NICHT hier eintragen — via `wrangler secret put NAME` setzen):
+#   STRIPE_SECRET_KEY
+#   STRIPE_WEBHOOK_SECRET
+#   STRIPE_PRICE_ID
+#   JWT_PRIVATE_KEY_PEM
+#   JWT_PUBLIC_KEY_PEM
+#   APP_DEVICE_SALT
+#   ADMIN_TOKEN
+
+# ───── PRODUCTION ─────
+
+[env.production]
+name = "billsorter-api"
+workers_dev = false
+routes = [
+  { pattern = "api.billsorter.de/*", custom_domain = true }
+]
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "billsorter-prod"
+database_id = "REPLACE_WITH_PROD_D1_ID"
+migrations_dir = "src/db/migrations"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+WEB_URL = "https://billsorter.de"
+API_URL = "https://api.billsorter.de"
+APP_DEEP_LINK_SCHEME = "billsorter"
+TRIAL_DAYS = "7"
+GRACE_DAYS = "7"
+PLAN_INTERVAL_DAYS = "30"
+
+# ───── OBSERVABILITY ─────
+
+[observability]
+enabled = true
+head_sampling_rate = 1.0

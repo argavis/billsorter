@@ -1,0 +1,87 @@
+---
+import Base from '@/layouts/Base.astro';
+
+const lang: 'de' | 'en' = 'de';
+---
+<Base lang={lang} title="AGB">
+  <article class="container-x py-32 prose prose-ink max-w-3xl">
+    <h1 class="text-sect-1 font-bold">Allgemeine Geschäftsbedingungen</h1>
+    <p class="text-ink-500 mt-2">Stand: <span class="placeholder">[Datum]</span></p>
+
+    <h2 class="mt-12">1. Geltungsbereich</h2>
+    <p>
+      Diese AGB gelten für alle Verträge zwischen <strong>ARGAVIS</strong> (im Folgenden „Anbieter")
+      und den Nutzern der Software <strong>BillSorter</strong>.
+    </p>
+
+    <h2 class="mt-8">2. Vertragsschluss</h2>
+    <p>
+      Der Vertrag kommt zustande, sobald der Nutzer die Software installiert und ein kostenpflichtiges
+      Abonnement im Anschluss an die 7-tägige Testphase abschließt. Die Bezahlung erfolgt über
+      Stripe; mit Abschluss des Bezahlvorgangs gilt der Vertrag als geschlossen.
+    </p>
+
+    <h2 class="mt-8">3. Leistungsgegenstand</h2>
+    <p>
+      BillSorter ist eine Desktop-Anwendung, die E-Mail-Postfächer auf Rechnungsanhänge scannt und
+      diese in lokalen Monatsordnern speichert. Die Klassifizierung erfolgt über die Anthropic Claude-API.
+    </p>
+
+    <h2 class="mt-8">4. Testphase</h2>
+    <p>
+      Der Anbieter gewährt eine 7-tägige kostenlose Testphase ohne Zahlungsmittel-Hinterlegung.
+      Nach Ablauf der Testphase ist die App nur mit aktivem Abonnement nutzbar.
+    </p>
+
+    <h2 class="mt-8">5. Preise und Zahlung</h2>
+    <p>
+      Der Preis beträgt <strong>6,99 € pro Monat</strong> zzgl. gesetzlicher MwSt. Die Abrechnung
+      erfolgt monatlich im Voraus. Die Bezahlung läuft über Stripe; Zahlungsmittel sind Kreditkarte
+      sowie SEPA-Lastschrift.
+    </p>
+
+    <h2 class="mt-8">6. Laufzeit und Kündigung</h2>
+    <p>
+      Das Abonnement verlängert sich monatlich automatisch und kann jederzeit zum Ende des laufenden
+      Abrechnungsmonats über das Stripe-Kundenportal gekündigt werden.
+    </p>
+
+    <h2 class="mt-8">7. Widerrufsrecht</h2>
+    <p>
+      Verbraucher haben ein 14-tägiges Widerrufsrecht. Details siehe
+      <a href="/widerruf" class="text-brand-700">Widerrufsbelehrung</a>.
+    </p>
+
+    <h2 class="mt-8">8. Haftung</h2>
+    <p>
+      Der Anbieter haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit
+      haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten und beschränkt auf den
+      vertragstypischen, vorhersehbaren Schaden.
+    </p>
+
+    <h2 class="mt-8">9. Verfügbarkeit</h2>
+    <p>
+      Der Anbieter ist bemüht, die Backend-Dienste (Lizenzprüfung, KI-Klassifizierung) durchgehend
+      verfügbar zu halten. Eine garantierte Verfügbarkeit wird nicht zugesichert. Bei Ausfällen läuft
+      die App lokal mit Keyword-Fallback weiter.
+    </p>
+
+    <h2 class="mt-8">10. Datenschutz</h2>
+    <p>
+      Details siehe <a href="/datenschutz" class="text-brand-700">Datenschutzerklärung</a>.
+    </p>
+
+    <h2 class="mt-8">11. Schlussbestimmungen</h2>
+    <p>
+      Es gilt deutsches Recht. Gerichtsstand ist <span class="placeholder">[Sitz des Anbieters]</span>.
+      Sollte eine Bestimmung dieser AGB unwirksam sein, bleibt die Wirksamkeit der übrigen unberührt.
+    </p>
+
+    <a href="/" class="mt-12 inline-block text-brand-700 hover:underline">← Home</a>
+  </article>
+  <style>
+    .placeholder { background: #fef3c7; padding: 2px 6px; border-radius: 4px; color: #92400e; font-family: monospace; font-size: 0.9em; }
+    .prose h2 { font-size: 1.5rem; font-weight: 700; }
+    .prose p { line-height: 1.7; }
+  </style>
+</Base>

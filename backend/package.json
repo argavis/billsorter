@@ -1,0 +1,29 @@
+{
+  "name": "billsorter-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BillSorter License + Payment API — Hono on Cloudflare Workers",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "typecheck": "tsc --noEmit",
+    "db:init:local": "wrangler d1 execute billsorter-dev --local --file=./src/db/migrations/0001_init.sql",
+    "db:init:remote": "wrangler d1 execute billsorter-prod --remote --file=./src/db/migrations/0001_init.sql",
+    "db:console:local": "wrangler d1 execute billsorter-dev --local --command",
+    "db:console:remote": "wrangler d1 execute billsorter-prod --remote --command",
+    "keys:generate": "node ./scripts/generate-keys.mjs"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "jose": "^5.9.0",
+    "stripe": "^17.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.86.0"
+  }
+}

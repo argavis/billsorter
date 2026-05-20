@@ -1,0 +1,137 @@
+---
+import de from '@content/de.json';
+import en from '@content/en.json';
+import BrandArrow from './icons/BrandArrow.astro';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+
+// 5 statische Invoice-Cards für den Stack rechts.
+// Reihenfolge top → bottom, mit absteigender opacity + rotation.
+const invoiceStack = [
+  { vendor: 'Rechnung 1', amount: '47,11 €', date: '15.01.2026', tag: 'Januar 2026',  sorted: true  },
+  { vendor: 'Rechnung 2', amount: '28,50 €', date: '22.01.2026', tag: 'Januar 2026',  sorted: true  },
+  { vendor: 'Rechnung 3', amount: '15,00 €', date: '18.02.2026', tag: 'Februar 2026', sorted: true  },
+  { vendor: 'Rechnung 4', amount: '4,00 €',  date: '03.03.2026', tag: 'März 2026',    sorted: true  },
+  { vendor: 'Rechnung 5', amount: '12,00 €', date: '14.03.2026', tag: null,            sorted: false },
+];
+---
+<section
+  id="hero"
+  class="relative min-h-[100dvh] overflow-hidden bg-ink-950 text-white"
+>
+  <!-- Static atmosphere: zwei weiche radiale Gradients, fest positioniert, kein JS -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <!-- Großer Lila-Glow zentral hinten -->
+    <div class="absolute left-1/2 top-1/2 h-[90vh] w-[90vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-700/35 blur-[160px]"></div>
+    <!-- Zweiter Glow weiter unten rechts, kühler -->
+    <div class="absolute right-[10%] bottom-[5%] h-[55vh] w-[55vh] rounded-full bg-brand-500/25 blur-[140px]"></div>
+  </div>
+
+  <!-- Subtiles Noise-Pattern als Premium-Layer -->
+  <div
+    class="pointer-events-none absolute inset-0 mix-blend-overlay opacity-[0.08]"
+    style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Content-Grid: 2 Spalten ab lg, sonst gestapelt -->
+  <div class="container-x relative z-10 grid min-h-[100dvh] items-center gap-12 py-32 lg:grid-cols-2 lg:gap-20">
+
+    <!-- LEFT: Text -->
+    <div class="max-w-2xl">
+      <h1 class="text-hero-1 font-bold tracking-tight">
+        <span class="block md:whitespace-nowrap" data-i18n-key="hero.headline_a">{dict.hero.headline_a}</span>
+        <span
+          class="block bg-gradient-to-br from-brand-200 via-brand-300 to-brand-500 bg-clip-text text-transparent md:whitespace-nowrap"
+          data-i18n-key="hero.headline_b"
+        >
+          {dict.hero.headline_b}
+        </span>
+      </h1>
+
+      <p class="mt-8 max-w-xl text-lg leading-relaxed text-white/75 sm:text-lg" data-i18n-key="hero.subline">
+        {dict.hero.subline}
+      </p>
+
+      <!-- Stat-Trio mit Brand-Arrows als Separatoren -->
+      <div class="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-5">
+        <div class="flex items-baseline gap-2">
+          <span class="text-4xl font-bold tabular-nums text-brand-300 sm:text-3xl" data-i18n-key="hero.stat1_value">{dict.hero.stat1_value}</span>
+          <span class="text-sm uppercase tracking-wider text-white/55 sm:text-xs" data-i18n-key="hero.stat1_label">{dict.hero.stat1_label}</span>
+        </div>
+        <span class="text-brand-400/50"><BrandArrow size={10} /></span>
+        <div class="flex items-baseline gap-2">
+          <span class="text-4xl font-bold tabular-nums text-brand-300 sm:text-3xl" data-i18n-key="hero.stat2_value">{dict.hero.stat2_value}</span>
+          <span class="text-sm uppercase tracking-wider text-white/55 sm:text-xs" data-i18n-key="hero.stat2_label">{dict.hero.stat2_label}</span>
+        </div>
+        <span class="text-brand-400/50"><BrandArrow size={10} /></span>
+        <div class="flex items-baseline gap-2">
+          <span class="text-4xl font-bold tabular-nums text-brand-300 sm:text-3xl" data-i18n-key="hero.stat3_value">{dict.hero.stat3_value}</span>
+          <span class="text-sm uppercase tracking-wider text-white/55 sm:text-xs" data-i18n-key="hero.stat3_label">{dict.hero.stat3_label}</span>
+        </div>
+      </div>
+
+      <div class="mt-12 flex flex-col items-start gap-3 sm:flex-row">
+        <a href="#pricing" class="btn-primary" data-i18n-key="hero.cta_trial">{dict.hero.cta_trial}</a>
+        <a href="#how" class="btn-ghost" data-i18n-key="hero.cta_howto">{dict.hero.cta_howto}</a>
+      </div>
+    </div>
+
+    <!-- RIGHT: Static Invoice-Card-Stack -->
+    <div class="relative hidden h-[560px] lg:block" aria-hidden="true">
+      <!-- Ambient ring hinter dem Stack -->
+      <div class="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5"></div>
+      <div class="pointer-events-none absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/5"></div>
+
+      <!-- Card-Stack: jede Card mit eigener Transform/Position -->
+      <div class="absolute inset-0">
+        {invoiceStack.map((inv, i) => {
+          // Vertikal staggered, leicht rotiert, oberste Card vorne
+          const offsetY = i * 76;
+          const rotate = (i - 2) * 4;
+          const scale = 1 - i * 0.03;
+          const opacity = 1 - i * 0.05;
+          return (
+            <div
+              class="absolute left-1/2 top-12 w-[280px] -translate-x-1/2"
+              style={`transform: translate(-50%, ${offsetY}px) rotate(${rotate}deg) scale(${scale}); opacity: ${opacity}; z-index: ${invoiceStack.length - i};`}
+            >
+              <div class="relative rounded-2xl border border-white/10 bg-white px-5 py-4 text-ink-900 shadow-2xl">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <div class="text-[10px] font-bold uppercase tracking-[0.18em] text-brand-700">Invoice</div>
+                    <div class="mt-2 text-base font-semibold tracking-tight">{inv.vendor}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-[9px] uppercase tracking-wider text-ink-400">{inv.date}</div>
+                    <div class="mt-1 text-lg font-bold tabular-nums">{inv.amount}</div>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between border-t border-ink-100 pt-3">
+                  <div class="flex items-center gap-1.5 text-[10px] text-ink-500">
+                    <span class="text-brand-600"><BrandArrow size={8} /></span>
+                    <span>PDF</span>
+                  </div>
+                  {inv.sorted && inv.tag && (
+                    <div class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-semibold text-brand-700">
+                      <span class="h-1.5 w-1.5 rounded-full bg-brand-600"></span>
+                      <span>{inv.tag}</span>
+                    </div>
+                  )}
+                  {!inv.sorted && (
+                    <div class="inline-flex items-center gap-1 rounded-full bg-ink-100 px-2 py-0.5 text-[10px] text-ink-500">
+                      <span>wird sortiert…</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+</section>

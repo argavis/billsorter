@@ -1,0 +1,62 @@
+---
+// Monatsordner — 3 gestaffelte Ordner mit Brand-Dreieck auf dem vordersten.
+// Brand-Familie: 64×64, stroke=currentColor, outline, Logo-Dreieck als Akzent.
+type Props = { class?: string };
+const { class: cls = '' } = Astro.props;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={`brand-icon ${cls}`}
+  aria-hidden="true"
+>
+  <!-- Back folder (kleiner, links-oben) -->
+  <g class="folder folder-back" opacity="0.45">
+    <path d="M8 14 L20 14 L24 18 L40 18 L40 40 L8 40 Z" />
+  </g>
+
+  <!-- Middle folder -->
+  <g class="folder folder-mid" opacity="0.7">
+    <path d="M14 20 L26 20 L30 24 L46 24 L46 46 L14 46 Z" />
+  </g>
+
+  <!-- Front folder (vollständig, prominent) -->
+  <g class="folder folder-front">
+    <path d="M20 26 L32 26 L36 30 L52 30 L52 52 L20 52 Z" />
+    <!-- Subtile Trennlinie Tab-Body -->
+    <line x1="20" y1="30" x2="36" y2="30" opacity="0.0" />
+  </g>
+
+  <!-- Brand-Dreieck obere rechte Ecke des vordersten Ordners (Logo-Geometrie) -->
+  <path class="brand-mark" d="M43 39 L43 32 L50 39 Z" fill="currentColor" stroke="none" />
+</svg>
+
+<style>
+  .brand-icon .folder {
+    transform-origin: center;
+    animation: folder-stack-bob 4.5s ease-in-out infinite;
+  }
+  .brand-icon .folder-back  { animation-delay: 0s; }
+  .brand-icon .folder-mid   { animation-delay: 0.15s; }
+  .brand-icon .folder-front { animation-delay: 0.3s; }
+  @keyframes folder-stack-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-1px); }
+  }
+  .brand-icon .brand-mark {
+    transform-origin: 46px 35px;
+    animation: brand-mark-pulse 3s ease-in-out infinite;
+  }
+  @keyframes brand-mark-pulse {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-icon .folder, .brand-icon .brand-mark { animation: none; }
+  }
+</style>

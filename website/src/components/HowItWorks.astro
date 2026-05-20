@@ -1,0 +1,182 @@
+---
+import de from '@content/de.json';
+import en from '@content/en.json';
+import BrandArrow from './icons/BrandArrow.astro';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+
+const steps = [
+  {
+    num: dict.how.step1_num,
+    title: dict.how.step1_title,
+    body: dict.how.step1_body,
+    numKey: 'how.step1_num',
+    titleKey: 'how.step1_title',
+    bodyKey: 'how.step1_body',
+  },
+  {
+    num: dict.how.step2_num,
+    title: dict.how.step2_title,
+    body: dict.how.step2_body,
+    numKey: 'how.step2_num',
+    titleKey: 'how.step2_title',
+    bodyKey: 'how.step2_body',
+  },
+  {
+    num: dict.how.step3_num,
+    title: dict.how.step3_title,
+    body: dict.how.step3_body,
+    numKey: 'how.step3_num',
+    titleKey: 'how.step3_title',
+    bodyKey: 'how.step3_body',
+  },
+];
+---
+<!--
+  Section 7 — How-it-Works.
+  3 nummerierte Schritte, vertikale Timeline mit Brand-Linie die beim Scrollen einzeichnet.
+  Defensive: ohne JS sichtbar, ohne fade-up gating.
+-->
+<section id="how" class="relative overflow-hidden bg-ink-950 py-32 text-white">
+  <!-- Ambient brand glow -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute left-1/2 top-[40%] h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-700/20 blur-[140px]"></div>
+  </div>
+
+  <!-- Dezente Brand-Dreieck-Akzente — strikt im Hintergrund, sehr transparent -->
+  <div class="pointer-events-none absolute left-[2%] top-[6%] z-0 text-brand-500 opacity-[0.05]" style="transform: rotate(15deg);" aria-hidden="true">
+    <BrandArrow size={140} />
+  </div>
+  <div class="pointer-events-none absolute right-[2%] bottom-[2%] z-0 text-brand-500 opacity-[0.05]" style="transform: rotate(205deg);" aria-hidden="true">
+    <BrandArrow size={110} />
+  </div>
+
+  <div class="container-x relative">
+    <!-- Header -->
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="text-xs font-semibold uppercase tracking-[0.25em] text-brand-400" data-i18n-key="how.kicker">
+        {dict.how.kicker}
+      </span>
+      <h2 class="mt-4 text-sect-1 font-bold tracking-tight text-balance" data-i18n-key="how.headline">
+        {dict.how.headline}
+      </h2>
+    </div>
+
+    <!-- Timeline -->
+    <div id="how-timeline" class="relative mx-auto mt-20 max-w-3xl">
+      <!-- Vertikale Linie (Track) -->
+      <div
+        class="pointer-events-none absolute left-[2.25rem] top-10 hidden h-[calc(100%-5rem)] w-px bg-white/10 sm:block"
+        aria-hidden="true"
+      ></div>
+      <!-- Vertikale Linie (Brand-Fortschritt, animiert) -->
+      <div
+        id="how-line-fill"
+        class="pointer-events-none absolute left-[2.25rem] top-10 hidden w-px origin-top bg-gradient-to-b from-brand-400 via-brand-500 to-brand-600 shadow-[0_0_12px_rgba(140,97,223,0.6)] sm:block"
+        style="height: calc(100% - 5rem); transform: scaleY(0);"
+        aria-hidden="true"
+      ></div>
+
+      <ol class="space-y-14">
+        {steps.map((s, i) => (
+          <li class="step-row relative grid grid-cols-1 gap-5 sm:grid-cols-[5rem_1fr] sm:gap-8">
+            <!-- Step-Circle mit Brand-Glow -->
+            <div class="relative flex justify-start">
+              <div class="relative flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full border border-white/15 bg-ink-900 shadow-glow-sm">
+                <span class="text-xl font-bold tabular-nums text-brand-300" data-i18n-key={s.numKey}>{s.num}</span>
+                <!-- Brand-Dreieck rotiert subtle als Akzent -->
+                <span class="absolute -right-1 -top-1 text-brand-400" aria-hidden="true">
+                  <BrandArrow size={10} />
+                </span>
+              </div>
+            </div>
+
+            <!-- Text -->
+            <div class="pt-2 sm:pt-3">
+              <div class="flex items-baseline gap-2">
+                <h3 class="text-2xl font-bold tracking-tight sm:text-3xl" data-i18n-key={s.titleKey}>{s.title}</h3>
+                <span class="text-brand-400/70" aria-hidden="true"><BrandArrow size={11} /></span>
+              </div>
+              <p class="mt-3 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg" data-i18n-key={s.bodyKey}>
+                {s.body}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <!-- Trailing CTA-Pointer -->
+    <div class="mt-16 text-center">
+      <a
+        href="#pricing"
+        class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-white/85 transition-all hover:bg-white/10"
+      >
+        <span data-i18n-key="nav.pricing">{dict.nav.pricing}</span>
+        <BrandArrow size={10} />
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // How-Linie. Desktop: scrub-Fill via GSAP (dynamisch). Mobile/iOS: IntersectionObserver fill.
+  const prefersReducedMotion = () =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = () =>
+    typeof window !== 'undefined' &&
+    (window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches);
+  const isIOS = () =>
+    typeof navigator !== 'undefined' &&
+    (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+
+  const fillNow = () => {
+    const fill = document.getElementById('how-line-fill');
+    if (fill) {
+      fill.style.transition = 'transform 0.9s ease-out';
+      fill.style.transform = 'scaleY(1)';
+    }
+  };
+
+  const setupMobileIO = () => {
+    const timeline = document.getElementById('how-timeline');
+    if (!timeline) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) { fillNow(); obs.disconnect(); }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(timeline);
+    setTimeout(fillNow, 1200);
+  };
+
+  const setupDesktop = async () => {
+    const { default: gsap } = await import('gsap');
+    const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+    gsap.registerPlugin(ScrollTrigger);
+    const fill = document.getElementById('how-line-fill');
+    const timeline = document.getElementById('how-timeline');
+    if (!fill || !timeline) return;
+    gsap.to(fill, {
+      scaleY: 1,
+      ease: 'none',
+      scrollTrigger: { trigger: timeline, start: 'top 75%', end: 'bottom 70%', scrub: 0.8 },
+    });
+  };
+
+  const setup = () => {
+    if (prefersReducedMotion()) { fillNow(); return; }
+    if (isMobile() || isIOS()) { setupMobileIO(); return; }
+    setupDesktop().catch((e) => { console.warn('how desktop failed', e); fillNow(); });
+  };
+
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(setup);
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(setup), { once: true });
+  }
+</script>

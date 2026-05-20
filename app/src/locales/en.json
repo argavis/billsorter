@@ -1,0 +1,194 @@
+{
+  "app": { "name": "BillSorter" },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "next": "Next",
+    "back": "Back",
+    "done": "Done",
+    "delete": "Delete",
+    "close": "Close"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
+  "license": {
+    "trial": "Trial",
+    "active": "Active",
+    "grace": "Grace period",
+    "expired": "Expired",
+    "revoked": "Revoked",
+    "unverified": "Unverified"
+  },
+  "trial": {
+    "banner": "{{days}} days left in trial",
+    "upgrade_cta": "Upgrade now"
+  },
+  "wizard": {
+    "setup_label": "Setup",
+    "step_locale": {
+      "title": "Choose your language",
+      "subtitle": "You can change it later in settings."
+    },
+    "step_welcome": {
+      "title": "Welcome to BillSorter",
+      "subtitle": "Set up in under 60 seconds — folder + mailbox is enough.",
+      "cta": "Start 7-day free trial",
+      "feat1": "Automatically scans your mailboxes for invoices.",
+      "feat2": "Sorts PDF attachments into monthly folders (e.g. January 2026).",
+      "feat3": "Credentials stay local — AI analysis runs through us, no API key needed.",
+      "trial_hint": "No payment for the first 7 days. Cancel anytime."
+    },
+    "step_folder": {
+      "title": "Where should invoices be saved?",
+      "subtitle": "Pick the main folder — BillSorter creates monthly subfolders inside.",
+      "label": "Accounting folder",
+      "placeholder": "Not yet selected — click 'Pick'",
+      "pick": "Pick",
+      "write_ok": "Write access OK.",
+      "write_error": "No write access",
+      "hint": "Tip: Create one folder per fiscal year, e.g. 'Accounting/2026'."
+    },
+    "step_providers": {
+      "title": "Which mailboxes do you want to scan?",
+      "subtitle": "Pick one or more email providers.",
+      "app_pw_required": "App password required",
+      "hint": "For Gmail, Outlook 365, iCloud and Yahoo you need an app password. We'll link to instructions in the next step."
+    },
+    "step_credentials": {
+      "title": "Credentials",
+      "subtitle": "Your passwords are stored in your OS keychain.",
+      "email": "Email address",
+      "password": "Password / app password",
+      "host": "IMAP server",
+      "port": "Port",
+      "create_app_pw": "Create app password",
+      "empty": "No providers selected — go back one step."
+    },
+    "step_schedule": {
+      "title": "Automatic scanning",
+      "subtitle": "When should BillSorter check for new invoices each day?",
+      "auto_label": "Enable auto scan",
+      "auto_hint": "If off, the scanner only runs manually.",
+      "time_label": "Time of day",
+      "days_label": "How far back?",
+      "day": "day",
+      "days": "days",
+      "os_hint": "We set up the scheduler via your OS (Mac: launchd, Windows: Task Scheduler). No terminal needed."
+    },
+    "step_test": {
+      "title": "Connection test",
+      "subtitle": "We test each provider with your credentials.",
+      "run": "Run test",
+      "testing": "Testing…",
+      "ok": "Connection OK.",
+      "mailbox_count": "Connected — {{count}} messages in mailbox."
+    },
+    "step_done": {
+      "title": "All set!",
+      "subtitle": "Your first scan will start when you click the button.",
+      "cta": "Go to dashboard",
+      "saving": "Saving…"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle_one": "1 mailbox configured",
+    "subtitle_other": "{{count}} mailboxes configured",
+    "subtitle": "{{count}} mailboxes configured",
+    "run_now": "Scan now",
+    "scanning": "Running…",
+    "next_run": "Next run",
+    "last_run": "Last run",
+    "never": "Never",
+    "auto_on": "Auto-scan on",
+    "auto_off": "Auto-scan off",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "log_title": "Live log",
+    "log_idle": "No scan running yet. Click 'Scan now'.",
+    "log_running": "Waiting for data…",
+    "stats": {
+      "found": "Found",
+      "saved": "Saved",
+      "skipped": "Skipped",
+      "duplicate": "Duplicates"
+    },
+    "range": {
+      "title": "Scan range",
+      "since_last": "Since last scan ({{date}})",
+      "since_disabled": "No previous scan yet",
+      "days_back": "Days back",
+      "day": "day",
+      "days": "days"
+    }
+  },
+  "automation": {
+    "title": "Automatic scan",
+    "description": "When and how far back should BillSorter scan each day?",
+    "toggle_label": "Auto-scan active",
+    "toggle_on_hint": "Runs daily at the configured time",
+    "toggle_off_hint": "Only manual scans via the button",
+    "time": "Time of day",
+    "days_back": "Days back",
+    "os_hint": "We set up the scheduler via your OS (Mac: launchd, Windows: Task Scheduler).",
+    "edit": "Edit automation",
+    "click_to_enable": "Click to enable auto-scan",
+    "click_to_disable": "Click to disable auto-scan"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage providers, plan and automation.",
+    "tab_general": "General",
+    "tab_providers": "Providers",
+    "tab_schedule": "Schedule",
+    "general": {
+      "locale_title": "Language",
+      "locale_desc": "Instant switch, no restart.",
+      "folder_title": "Accounting folder",
+      "folder_desc": "Main folder for monthly structure.",
+      "folder_change": "Change",
+      "subscription_title": "Manage subscription",
+      "subscription_desc": "Opens Stripe customer portal in your browser.",
+      "open_portal": "Open portal"
+    },
+    "providers": {
+      "title": "Email mailboxes",
+      "desc": "Enable, disable or remove mailboxes.",
+      "empty": "No mailboxes configured.",
+      "active": "Active",
+      "disabled": "Off"
+    },
+    "schedule": {
+      "title": "Automatic scan",
+      "desc": "Daily time and look-back range.",
+      "auto_label": "Auto-scan active",
+      "auto_hint": "Off: manual scans only.",
+      "time_label": "Time of day",
+      "days_label": "Days to look back"
+    }
+  },
+  "paywall": {
+    "title": "BillSorter Pro",
+    "subtitle": "Stay on top — automatically.",
+    "per_month": "/ month",
+    "vat_included": "VAT incl., billed monthly",
+    "feat1": "Scan unlimited email mailboxes",
+    "feat2": "Claude Haiku AI for top accuracy",
+    "feat3": "Automatic monthly folder sorting",
+    "feat4": "Mac + Windows, local data storage",
+    "cta_stripe": "Pay with card (Stripe)",
+    "cancel_anytime": "Cancel anytime — risk-free.",
+    "expired_badge": "Trial expired"
+  },
+  "debug": {
+    "status_title": "Status",
+    "actions_title": "Actions",
+    "action_trial": "Start trial",
+    "action_check": "Check license",
+    "action_providers": "Fetch providers",
+    "toggle_lang": "Lang: DE ↔ EN"
+  }
+}

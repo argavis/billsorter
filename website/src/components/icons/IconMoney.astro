@@ -1,0 +1,15 @@
+---
+type Props = { class?: string };
+const { class: cls = '' } = Astro.props;
+---
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+  fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+  class={cls} aria-hidden="true">
+  <!-- Euro-Symbol Stilisiert -->
+  <circle cx="24" cy="24" r="18" />
+  <path d="M30 16 C26 14 20 14 17 20 C15 23 15 25 17 28 C20 34 26 34 30 32" stroke-width="2" />
+  <path d="M13 22 L25 22" />
+  <path d="M13 26 L23 26" />
+  <!-- Down-Arrow (Verlust) unten rechts -->
+  <path d="M38 36 L42 40 L36 40 Z" fill="#5923c2" stroke="none" />
+</svg>

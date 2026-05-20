@@ -1,0 +1,194 @@
+{
+  "app": { "name": "BillSorter" },
+  "common": {
+    "loading": "Lädt…",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "next": "Weiter",
+    "back": "Zurück",
+    "done": "Fertig",
+    "delete": "Löschen",
+    "close": "Schließen"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "settings": "Einstellungen"
+  },
+  "license": {
+    "trial": "Trial",
+    "active": "Aktiv",
+    "grace": "Verlängerungsphase",
+    "expired": "Abgelaufen",
+    "revoked": "Gesperrt",
+    "unverified": "Nicht geprüft"
+  },
+  "trial": {
+    "banner": "{{days}} Tage Trial übrig",
+    "upgrade_cta": "Jetzt freischalten"
+  },
+  "wizard": {
+    "setup_label": "Einrichtung",
+    "step_locale": {
+      "title": "Wähle deine Sprache",
+      "subtitle": "Du kannst sie später in den Einstellungen ändern."
+    },
+    "step_welcome": {
+      "title": "Willkommen bei BillSorter",
+      "subtitle": "In unter 60 Sekunden eingerichtet — Ordner + Postfach genügt.",
+      "cta": "7 Tage kostenlos starten",
+      "feat1": "Scannt automatisch deine Mail-Postfächer nach Rechnungen.",
+      "feat2": "Sortiert PDF-Anhänge nach Monatsordnern (z.B. Januar 2026).",
+      "feat3": "Zugangsdaten bleiben lokal — KI-Analyse läuft über uns, kein eigener API-Key nötig.",
+      "trial_hint": "Keine Zahlung nötig für die ersten 7 Tage. Jederzeit kündbar."
+    },
+    "step_folder": {
+      "title": "Wohin sollen Rechnungen gespeichert werden?",
+      "subtitle": "Wähle den Hauptordner — BillSorter legt darin Monatsunterordner an.",
+      "label": "Buchhaltungs-Ordner",
+      "placeholder": "Noch nicht gewählt — klick auf 'Auswählen'",
+      "pick": "Auswählen",
+      "write_ok": "Schreibrechte OK.",
+      "write_error": "Kein Schreibzugriff",
+      "hint": "Tipp: Lege einen Ordner pro Geschäftsjahr an, z.B. 'Buchhaltung/2026'."
+    },
+    "step_providers": {
+      "title": "Welche Postfächer willst du scannen?",
+      "subtitle": "Wähle einen oder mehrere E-Mail-Anbieter aus.",
+      "app_pw_required": "App-Passwort nötig",
+      "hint": "Für Gmail, Outlook 365, iCloud und Yahoo brauchst du ein App-Passwort. Wir verlinken im nächsten Schritt zur Anleitung."
+    },
+    "step_credentials": {
+      "title": "Zugangsdaten",
+      "subtitle": "Deine Passwörter werden im Schlüsselbund deines Betriebssystems gespeichert.",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort / App-Passwort",
+      "host": "IMAP-Server",
+      "port": "Port",
+      "create_app_pw": "App-Passwort erstellen",
+      "empty": "Keine Provider ausgewählt — gehe einen Schritt zurück."
+    },
+    "step_schedule": {
+      "title": "Automatischer Scan",
+      "subtitle": "Wann soll BillSorter täglich nach neuen Rechnungen schauen?",
+      "auto_label": "Auto-Scan aktivieren",
+      "auto_hint": "Wenn aus, läuft der Scanner nur manuell.",
+      "time_label": "Uhrzeit",
+      "days_label": "Wie weit zurückblicken?",
+      "day": "Tag",
+      "days": "Tage",
+      "os_hint": "Wir richten den Scheduler über dein System ein (Mac: launchd, Windows: Task Scheduler). Kein Terminal nötig."
+    },
+    "step_test": {
+      "title": "Verbindungstest",
+      "subtitle": "Wir prüfen jeden Provider mit deinen Zugangsdaten.",
+      "run": "Test starten",
+      "testing": "Teste…",
+      "ok": "Verbindung OK.",
+      "mailbox_count": "Verbunden — {{count}} Mails im Postfach."
+    },
+    "step_done": {
+      "title": "Alles fertig!",
+      "subtitle": "Dein erster Scan startet beim Klick auf den Button.",
+      "cta": "Zum Dashboard",
+      "saving": "Speichere…"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle_one": "1 Postfach konfiguriert",
+    "subtitle_other": "{{count}} Postfächer konfiguriert",
+    "subtitle": "{{count}} Postfächer konfiguriert",
+    "run_now": "Jetzt scannen",
+    "scanning": "Läuft…",
+    "next_run": "Nächster Run",
+    "last_run": "Letzter Run",
+    "never": "Noch nie",
+    "auto_on": "Auto-Scan ein",
+    "auto_off": "Auto-Scan aus",
+    "today": "Heute",
+    "tomorrow": "Morgen",
+    "log_title": "Live-Log",
+    "log_idle": "Noch kein Scan gestartet. Klick auf 'Jetzt scannen'.",
+    "log_running": "Warte auf Daten…",
+    "stats": {
+      "found": "Gefunden",
+      "saved": "Gespeichert",
+      "skipped": "Übersprungen",
+      "duplicate": "Duplikate"
+    },
+    "range": {
+      "title": "Scan-Zeitraum",
+      "since_last": "Seit letztem Scan ({{date}})",
+      "since_disabled": "Noch kein letzter Scan",
+      "days_back": "Tage rückwirkend",
+      "day": "Tag",
+      "days": "Tage"
+    }
+  },
+  "automation": {
+    "title": "Automatischer Scan",
+    "description": "Wann und wie weit zurück soll BillSorter täglich scannen?",
+    "toggle_label": "Auto-Scan aktiv",
+    "toggle_on_hint": "Läuft täglich zur eingestellten Uhrzeit",
+    "toggle_off_hint": "Nur manuelle Scans über den Button",
+    "time": "Uhrzeit",
+    "days_back": "Tage rückwirkend",
+    "os_hint": "Wir richten den Scheduler über dein Betriebssystem ein (Mac: launchd, Windows: Task Scheduler).",
+    "edit": "Automatisierung bearbeiten",
+    "click_to_enable": "Klicken um Auto-Scan zu aktivieren",
+    "click_to_disable": "Klicken um Auto-Scan zu deaktivieren"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Provider, Plan und Automatisierung verwalten.",
+    "tab_general": "Allgemein",
+    "tab_providers": "Provider",
+    "tab_schedule": "Zeitplan",
+    "general": {
+      "locale_title": "Sprache",
+      "locale_desc": "Sofortiger Wechsel ohne Neustart.",
+      "folder_title": "Buchhaltungs-Ordner",
+      "folder_desc": "Hauptordner für die Monatsstruktur.",
+      "folder_change": "Ändern",
+      "subscription_title": "Abo verwalten",
+      "subscription_desc": "Öffnet das Stripe-Kundenportal in deinem Browser.",
+      "open_portal": "Portal öffnen"
+    },
+    "providers": {
+      "title": "E-Mail-Postfächer",
+      "desc": "Aktiviere oder entferne einzelne Postfächer.",
+      "empty": "Keine Postfächer konfiguriert.",
+      "active": "Aktiv",
+      "disabled": "Aus"
+    },
+    "schedule": {
+      "title": "Automatischer Scan",
+      "desc": "Tägliche Uhrzeit und Lookback-Zeitraum.",
+      "auto_label": "Auto-Scan aktiv",
+      "auto_hint": "Aus: nur manuelle Scans.",
+      "time_label": "Uhrzeit",
+      "days_label": "Tage rückwirkend"
+    }
+  },
+  "paywall": {
+    "title": "BillSorter Pro",
+    "subtitle": "Behalte den Überblick — automatisch.",
+    "per_month": "/ Monat",
+    "vat_included": "inkl. MwSt., monatlich abrechenbar",
+    "feat1": "Unlimitierte E-Mail-Postfächer scannen",
+    "feat2": "Claude-Haiku-KI für höchste Genauigkeit",
+    "feat3": "Automatische Monatsordner-Sortierung",
+    "feat4": "Mac + Windows, lokale Datenhaltung",
+    "cta_stripe": "Mit Kreditkarte (Stripe)",
+    "cancel_anytime": "Jederzeit kündbar — kein Risiko.",
+    "expired_badge": "Trial abgelaufen"
+  },
+  "debug": {
+    "status_title": "Status",
+    "actions_title": "Aktionen",
+    "action_trial": "Trial starten",
+    "action_check": "Lizenz prüfen",
+    "action_providers": "Provider abfragen",
+    "toggle_lang": "Sprache: DE ↔ EN"
+  }
+}

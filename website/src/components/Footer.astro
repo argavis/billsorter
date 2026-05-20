@@ -1,0 +1,101 @@
+---
+import de from '@content/de.json';
+import en from '@content/en.json';
+import BrandArrow from './icons/BrandArrow.astro';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+---
+<footer id="footer" class="relative overflow-hidden border-t border-white/5 bg-ink-950 text-white/65">
+  <!-- Subtiler Brand-Glow oben als Übergang aus Pricing -->
+  <div class="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-brand-500/40 to-transparent" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute left-1/2 top-0 h-40 w-[80vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-700/15 blur-3xl" aria-hidden="true"></div>
+
+  <!-- Dezentes Brand-Dreieck im BG -->
+  <div class="pointer-events-none absolute right-[2%] bottom-[4%] z-0 text-brand-500 opacity-[0.04]" style="transform: rotate(-20deg);" aria-hidden="true">
+    <BrandArrow size={110} />
+  </div>
+
+  <div class="container-x relative py-20">
+    <!-- Top Grid: Brand + 4 Spalten -->
+    <div class="grid grid-cols-2 gap-10 md:grid-cols-5">
+      <!-- Brand-Block -->
+      <div class="col-span-2 md:col-span-1">
+        <a href="/" class="inline-flex items-center" aria-label="BillSorter">
+          <img
+            src="/logo-wordmark.png"
+            alt="BillSorter"
+            class="h-6 w-auto select-none"
+            style="filter: brightness(0) invert(1);"
+            draggable="false"
+          />
+        </a>
+        <p class="mt-5 max-w-xs text-sm leading-relaxed text-white/55" data-i18n-key="footer.tagline">
+          {dict.footer.tagline}
+        </p>
+      </div>
+
+      <!-- Produkt -->
+      <div>
+        <div class="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85" data-i18n-key="footer.col_product">
+          <span class="text-brand-400"><BrandArrow size={8} /></span>
+          <span>{dict.footer.col_product}</span>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          <li><a href="#features" class="transition-colors hover:text-white" data-i18n-key="footer.link_features">{dict.footer.link_features}</a></li>
+          <li><a href="#how" class="transition-colors hover:text-white" data-i18n-key="nav.howto">{dict.nav.howto}</a></li>
+          <li><a href="#pricing" class="transition-colors hover:text-white" data-i18n-key="footer.link_pricing">{dict.footer.link_pricing}</a></li>
+          <li><a href="#pricing" class="transition-colors hover:text-white" data-i18n-key="footer.link_download">{dict.footer.link_download}</a></li>
+        </ul>
+      </div>
+
+      <!-- Rechtliches -->
+      <div>
+        <div class="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85" data-i18n-key="footer.col_legal">
+          <span class="text-brand-400"><BrandArrow size={8} /></span>
+          <span>{dict.footer.col_legal}</span>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          <li><a href="/impressum" class="transition-colors hover:text-white" data-i18n-key="footer.link_impressum">{dict.footer.link_impressum}</a></li>
+          <li><a href="/agb" class="transition-colors hover:text-white" data-i18n-key="footer.link_agb">{dict.footer.link_agb}</a></li>
+          <li><a href="/datenschutz" class="transition-colors hover:text-white" data-i18n-key="footer.link_datenschutz">{dict.footer.link_datenschutz}</a></li>
+          <li><a href="/widerruf" class="transition-colors hover:text-white" data-i18n-key="footer.link_widerruf">{dict.footer.link_widerruf}</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <div class="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85" data-i18n-key="footer.col_support">
+          <span class="text-brand-400"><BrandArrow size={8} /></span>
+          <span>{dict.footer.col_support}</span>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          <li><a href="/install-mac" class="transition-colors hover:text-white" data-i18n-key="footer.link_install_mac">{dict.footer.link_install_mac}</a></li>
+          <li><a href="/install-windows" class="transition-colors hover:text-white" data-i18n-key="footer.link_install_win">{dict.footer.link_install_win}</a></li>
+          <li><a href="mailto:support@billsorter.app" class="transition-colors hover:text-white" data-i18n-key="footer.link_contact">{dict.footer.link_contact}</a></li>
+        </ul>
+      </div>
+
+      <!-- Unternehmen -->
+      <div>
+        <div class="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85" data-i18n-key="footer.col_company">
+          <span class="text-brand-400"><BrandArrow size={8} /></span>
+          <span>{dict.footer.col_company}</span>
+        </div>
+        <ul class="mt-5 space-y-2.5 text-sm">
+          <li><a href="/impressum" class="transition-colors hover:text-white" data-i18n-key="footer.link_about">{dict.footer.link_about}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom-Bar -->
+    <div class="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
+      <span data-i18n-key="footer.copyright">{dict.footer.copyright}</span>
+      <span class="flex items-center gap-1.5">
+        <span class="text-brand-400/70"><BrandArrow size={8} /></span>
+        <span>billsorter.app</span>
+      </span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,133 @@
+---
+import de from '@content/de.json';
+import en from '@content/en.json';
+import BrandArrow from './icons/BrandArrow.astro';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+
+// Download-URLs — vorerst GitHub Releases (Phase 6)
+const macUrl = 'https://github.com/argavis/billsorter-releases/releases/latest/download/BillSorter.dmg';
+const winUrl = 'https://github.com/argavis/billsorter-releases/releases/latest/download/BillSorter-Setup.exe';
+---
+<section
+  id="pricing"
+  class="relative overflow-hidden bg-ink-950 py-32 text-white"
+>
+  <!-- Ambient brand glow -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute left-1/2 top-1/2 h-[80vh] w-[80vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-700/30 blur-[140px]"></div>
+  </div>
+
+  <!-- Noise overlay (subtle) -->
+  <div
+    class="pointer-events-none absolute inset-0 mix-blend-overlay opacity-[0.06]"
+    style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Dezenter Brand-Triangle Hintergrund-Akzent -->
+  <div class="pointer-events-none absolute right-[8%] top-[12%] text-brand-400/10" style="transform: rotate(-15deg);" aria-hidden="true">
+    <BrandArrow size={220} />
+  </div>
+  <div class="pointer-events-none absolute left-[6%] bottom-[10%] text-brand-400/10" style="transform: rotate(195deg);" aria-hidden="true">
+    <BrandArrow size={160} />
+  </div>
+
+  <div class="container-x relative">
+    <!-- Header -->
+    <div class="mx-auto max-w-2xl text-center">
+      <span class="text-xs font-semibold uppercase tracking-[0.25em] text-brand-400" data-i18n-key="pricing.kicker">
+        {dict.pricing.kicker}
+      </span>
+      <h2 class="mt-4 text-sect-1 font-bold tracking-tight text-balance" data-i18n-key="pricing.headline">
+        {dict.pricing.headline}
+      </h2>
+      <p class="mt-2 text-lg italic text-white/55" data-i18n-key="pricing.headline_sub">
+        {(dict.pricing as any).headline_sub}
+      </p>
+      <p class="mx-auto mt-5 max-w-xl text-lg text-white/70" data-i18n-key="pricing.subline">
+        {dict.pricing.subline}
+      </p>
+    </div>
+
+    <!-- Pricing-Card -->
+    <div class="relative mx-auto mt-16 max-w-md">
+      <!-- Trial-Chip (oben rechts) -->
+      <div class="absolute -right-3 -top-4 z-10 sm:-right-6 sm:-top-5">
+        <div class="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-brand-700 shadow-glow-sm">
+          <span class="text-brand-600"><BrandArrow size={9} /></span>
+          <span data-i18n-key="pricing.trial_badge">{dict.pricing.trial_badge}</span>
+        </div>
+      </div>
+
+      <!-- Glow halo behind card -->
+      <div class="pointer-events-none absolute -inset-4 rounded-[2rem] bg-brand-600/20 blur-2xl" aria-hidden="true"></div>
+
+      <!-- Card -->
+      <div class="relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-8 backdrop-blur-md sm:p-10">
+        <!-- Big BrandArrow in card BG -->
+        <div class="pointer-events-none absolute -right-10 -bottom-10 text-brand-600/15" style="transform: rotate(15deg);" aria-hidden="true">
+          <BrandArrow size={220} />
+        </div>
+
+        <div class="relative">
+          <!-- Plan name -->
+          <div class="flex items-center justify-center gap-2">
+            <span class="text-brand-400"><BrandArrow size={10} /></span>
+            <span class="text-xs font-semibold uppercase tracking-[0.25em] text-white/80" data-i18n-key="pricing.plan_name">
+              {dict.pricing.plan_name}
+            </span>
+          </div>
+
+          <!-- Preis -->
+          <div class="mt-7 flex items-end justify-center gap-1 tabular-nums">
+            <span class="text-7xl font-bold tracking-tight" data-i18n-key="pricing.price">{dict.pricing.price}</span>
+            <span class="mb-2 text-3xl font-semibold" data-i18n-key="pricing.currency">{dict.pricing.currency}</span>
+            <span class="mb-3 ml-1 text-sm text-white/70" data-i18n-key="pricing.per_month">{dict.pricing.per_month}</span>
+          </div>
+          <div class="mt-2 text-center text-xs text-white/55" data-i18n-key="pricing.vat">{dict.pricing.vat}</div>
+
+          <!-- Trennlinie -->
+          <div class="mx-auto mt-7 h-px w-16 bg-white/10"></div>
+
+          <!-- Features -->
+          <ul class="mt-7 space-y-3.5 text-sm text-white/85">
+            {[1, 2, 3, 4].map((i) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-[0.35em] text-brand-400 shrink-0">
+                  <BrandArrow size={10} />
+                </span>
+                <span data-i18n-key={`pricing.feat${i}`}>{(dict.pricing as any)[`feat${i}`]}</span>
+              </li>
+            ))}
+          </ul>
+
+          <!-- CTAs -->
+          <div class="mt-9 space-y-3">
+            <a
+              href={macUrl}
+              class="group flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-brand-700 shadow-glow-sm transition-all hover:bg-brand-50 active:scale-[0.98]"
+            >
+              <span data-i18n-key="pricing.cta_mac">{dict.pricing.cta_mac}</span>
+              <span class="transition-transform group-hover:translate-x-0.5"><BrandArrow size={10} /></span>
+            </a>
+            <a
+              href={winUrl}
+              class="group flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/10 active:scale-[0.98]"
+            >
+              <span data-i18n-key="pricing.cta_win">{dict.pricing.cta_win}</span>
+              <span class="transition-transform group-hover:translate-x-0.5"><BrandArrow size={10} /></span>
+            </a>
+          </div>
+
+          <!-- Fineprint -->
+          <p class="mt-6 text-center text-[11px] leading-relaxed text-white/55" data-i18n-key="pricing.fineprint">
+            {dict.pricing.fineprint}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

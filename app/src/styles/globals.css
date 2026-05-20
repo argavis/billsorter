@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: rgba(15, 23, 42, 0.08);
+    --shadow-color: rgba(108, 43, 217, 0.10);
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink-50 text-ink-900 font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Mac-Title-Bar Drag-Region */
+  .title-bar {
+    -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+
+  ::selection {
+    background: rgba(108, 43, 217, 0.18);
+    color: inherit;
+  }
+}
+
+@layer components {
+  .card-base {
+    @apply bg-white border border-ink-200 rounded-xl shadow-card;
+  }
+}
+
+@layer utilities {
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(108, 43, 217, 0.3) transparent;
+  }
+  .scroll-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: rgba(108, 43, 217, 0.3);
+    border-radius: 3px;
+  }
+}

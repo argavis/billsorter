@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+*/node_modules/
+
+# Build artefacts
+dist/
+build/
+out/
+*.tsbuildinfo
+.wrangler/
+.dev.vars
+.dev.vars.local
+
+# Python build
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+python/build/dist/
+python/build/build/
+
+# Electron build output
+app/dist/
+app/release/
+app/.vite/
+
+# Local app data
+userData/
+*.log
+logs/
+secrets.json
+
+# OS + Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Cert / Keys (never commit)
+*.pem
+*.key
+private*.pem
+*-private.pem

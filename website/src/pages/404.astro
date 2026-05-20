@@ -1,0 +1,47 @@
+---
+import Base from '@/layouts/Base.astro';
+import BrandArrow from '@components/icons/BrandArrow.astro';
+
+const lang: 'de' | 'en' = 'de';
+---
+<Base lang={lang} title="404 — Seite nicht gefunden · BillSorter" bare>
+  <main class="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-ink-950 px-6 text-white">
+    <!-- Ambient brand glow -->
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-700/25 blur-[140px]"></div>
+    </div>
+    <!-- Dezente Brand-Dreiecke -->
+    <div class="pointer-events-none absolute left-[8%] top-[18%] text-brand-500 opacity-[0.06]" style="transform: rotate(15deg);" aria-hidden="true">
+      <BrandArrow size={150} />
+    </div>
+    <div class="pointer-events-none absolute right-[8%] bottom-[14%] text-brand-500 opacity-[0.06]" style="transform: rotate(205deg);" aria-hidden="true">
+      <BrandArrow size={120} />
+    </div>
+
+    <div class="relative z-10 mx-auto max-w-xl text-center">
+      <div class="flex items-center justify-center gap-3">
+        <span class="text-brand-400"><BrandArrow size={18} /></span>
+        <span class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-400">Fehler 404</span>
+      </div>
+
+      <h1 class="mt-6 text-[clamp(4rem,16vw,7rem)] font-bold leading-none tracking-tight">
+        <span class="bg-gradient-to-br from-brand-200 via-brand-300 to-brand-500 bg-clip-text text-transparent">404</span>
+      </h1>
+
+      <h2 class="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+        Diese Seite ist nicht sortiert.
+      </h2>
+      <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-white/70 sm:text-lg">
+        Die Seite, die du suchst, gibt es nicht oder wurde verschoben. Zurück zur Startseite, da liegt alles an seinem Platz.
+      </p>
+
+      <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/" class="btn-primary">
+          <span>Zur Startseite</span>
+          <BrandArrow size={10} />
+        </a>
+        <a href="/#pricing" class="btn-ghost">Preise ansehen</a>
+      </div>
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,77 @@
+---
+import LangToggle from './LangToggle.astro';
+import de from '@content/de.json';
+import en from '@content/en.json';
+
+type Props = { lang: 'de' | 'en' };
+const { lang } = Astro.props;
+const dict = lang === 'de' ? de : en;
+---
+<nav id="site-nav" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+  <div class="container-x">
+    <div
+      id="site-nav-pill"
+      class="mt-4 flex items-center justify-between gap-4 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 backdrop-blur-xl transition-all duration-300"
+    >
+      <a href="/" class="flex shrink-0 items-center" aria-label="BillSorter">
+        <img
+          src="/logo-wordmark.png"
+          alt="BillSorter"
+          class="h-6 w-auto select-none"
+          style="filter: brightness(0) invert(1);"
+          draggable="false"
+        />
+      </a>
+
+      <ul class="hidden md:flex items-center gap-1 text-sm font-medium text-white/75">
+        <li><a href="#features" data-i18n-key="nav.features"
+               class="rounded-full px-3 py-1.5 transition-colors hover:text-white">{dict.nav.features}</a></li>
+        <li><a href="#how" data-i18n-key="nav.howto"
+               class="rounded-full px-3 py-1.5 transition-colors hover:text-white">{dict.nav.howto}</a></li>
+        <li><a href="#pricing" data-i18n-key="nav.pricing"
+               class="rounded-full px-3 py-1.5 transition-colors hover:text-white">{dict.nav.pricing}</a></li>
+      </ul>
+
+      <div class="flex items-center gap-3">
+        <LangToggle lang={lang} />
+        <a href="#pricing" data-i18n-key="nav.download"
+           class="hidden sm:inline-flex items-center rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-ink-900 transition-all hover:bg-brand-100">
+          {dict.nav.download}
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Sticky-Nav-Scroll-State: nach dem Scrollen kompakter + opaker Hintergrund.
+  const init = () => {
+    const pill = document.getElementById('site-nav-pill');
+    const nav = document.getElementById('site-nav');
+    if (!pill || !nav) return;
+    const onScroll = () => {
+      const scrolled = window.scrollY > 24;
+      pill.classList.toggle('is-scrolled', scrolled);
+      nav.classList.toggle('is-scrolled', scrolled);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+</script>
+
+<style>
+  #site-nav.is-scrolled { padding-top: 0; }
+  #site-nav-pill.is-scrolled {
+    margin-top: 0.5rem;
+    background-color: rgba(8, 8, 8, 0.72);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+  }
+</style>
