@@ -22,14 +22,29 @@ const description = Astro.props.description ?? dict.meta.description;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Globaler Error-Logger: läuft als allererstes, fängt JS-Fehler die sonst
-         alles nach dem Hero blockieren würden (iOS-Debugging). -->
+    <!-- Sichtbarer On-Screen-Error-Logger (iOS-Debugging ohne USB/DevTools).
+         Zeigt JS-Fehler direkt als rotes Overlay am unteren Rand. -->
     <script is:inline>
-      window.onerror = function (msg, src, line, col) {
-        console.log('ERROR:', msg, '@', (src || '').split('/').pop() + ':' + line + ':' + col);
+      window.__showErr = function (text) {
+        var el = document.getElementById('err-log');
+        if (!el) {
+          // Fehler vor dem Body: zwischenspeichern, beim DOMContentLoaded ausgeben.
+          (window.__errQueue = window.__errQueue || []).push(text);
+          return;
+        }
+        el.style.display = 'block';
+        var line = document.createElement('div');
+        line.textContent = text;
+        el.appendChild(line);
       };
-      window.addEventListener('unhandledrejection', function (e) {
-        console.log('PROMISE REJECTION:', e.reason && (e.reason.message || e.reason));
+      window.onerror = function (msg, src, lineNo) {
+        window.__showErr(msg + ' (' + (src || '') + ':' + lineNo + ')');
+      };
+      window.onunhandledrejection = function (e) {
+        window.__showErr('Promise: ' + (e.reason && (e.reason.message || e.reason)));
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        if (window.__errQueue) window.__errQueue.forEach(window.__showErr);
       });
     </script>
     <meta name="theme-color" content="#5923c2" />
@@ -53,6 +68,7 @@ const description = Astro.props.description ?? dict.meta.description;
     <link rel="preconnect" href="https://rsms.me" crossorigin />
   </head>
   <body class="bg-ink-950 text-white">
+    <div id="err-log" style="display:none;position:fixed;bottom:0;left:0;right:0;background:red;color:white;font-size:12px;line-height:1.4;padding:8px;z-index:99999;max-height:200px;overflow-y:auto;font-family:monospace"></div>
     {!Astro.props.bare && <Nav lang={lang} />}
     <main>
       <slot />

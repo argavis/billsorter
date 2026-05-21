@@ -39,6 +39,24 @@
     background: rgba(89, 35, 194, 0.25);
     color: inherit;
   }
+
+  /* iOS-WebKit Scroll-Paint-Fix: großflächige GPU-Blurs (blur-[140px]/[160px], blur-3xl/2xl)
+     und mix-blend-mode lassen WebKit beim Scroll-Übergang kurz schwarz zeichnen, bis
+     neu gepaintet ist. Auf Mobile abschalten — die Glows sind rein dekorativ, die
+     Sections behalten ihre Hintergrundfarben. Sicherheitsnetz: keine vh-Höhe auf Mobile. */
+  @media (max-width: 767px) {
+    [class*='blur-['],
+    .blur-3xl,
+    .blur-2xl {
+      display: none !important;
+    }
+    [class*='mix-blend'] {
+      mix-blend-mode: normal !important;
+    }
+    section[class*='dvh'] {
+      height: auto !important;
+    }
+  }
 }
 
 @layer components {
