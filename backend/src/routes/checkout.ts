@@ -47,6 +47,17 @@ checkoutRoutes.post('/stripe', async (c) => {
     allow_promotion_codes: true,
     billing_address_collection: 'required',
     customer_creation: 'always',
+    custom_fields: [
+      {
+        key: 'company',
+        label: {
+          type: 'custom',
+          custom: parsed.data.locale === 'en' ? 'Company (optional)' : 'Firmenname (optional)',
+        },
+        type: 'text',
+        optional: true,
+      },
+    ],
     metadata: {
       licenseId: license.id,
       deviceIdHash,

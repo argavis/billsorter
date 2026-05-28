@@ -21,6 +21,13 @@ export type Bindings = {
   APP_DEVICE_SALT: string;
   ADMIN_TOKEN: string;
   ANTHROPIC_API_KEY: string;
+
+  // MOCO (Rechnungs-Automatik nach Stripe-Zahlung) — gleicher Account wie SALIO.
+  MOCO_SUBDOMAIN?: string;
+  MOCO_API_KEY?: string;
+  // Brevo (Rechnungs-Versand per Mail mit PDF-Anhang).
+  BREVO_API_KEY?: string;
+  BREVO_SENDER_EMAIL?: string;
 };
 
 export type LicenseStatus = 'trial' | 'active' | 'grace' | 'expired' | 'revoked';

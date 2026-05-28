@@ -17,7 +17,7 @@ adminRoutes.use('*', async (c, next) => {
   const auth = c.req.header('authorization') ?? '';
   const expected = `Bearer ${c.env.ADMIN_TOKEN}`;
   if (auth !== expected) return unauthorized(c, 'admin_token_invalid');
-  await next();
+  return next();
 });
 
 const RevokeBody = z.object({

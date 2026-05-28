@@ -1,7 +1,8 @@
 import { Hono } from 'hono';
+import type { ExecutionContext } from '@cloudflare/workers-types';
 import type Stripe from 'stripe';
 import type { Bindings } from '../types';
-import { verifyStripeWebhook } from '../lib/stripe';
+import { getStripe, verifyStripeWebhook } from '../lib/stripe';
 import {
   addDays,
   db,
@@ -12,14 +13,21 @@ import {
   logEvent,
   markWebhookProcessed,
   markWebhookSeen,
+  recordMocoInvoice,
   revokeLicense,
   setUserEmail,
   setUserStripeCustomer,
   updateLicenseProvider,
   updateLicenseStatus,
   uuid,
+  wasMocoInvoiceCreated,
   wasWebhookProcessed,
 } from '../lib/db';
+import {
+  createBillSorterInvoice,
+  getOrCreateCustomer,
+  sendInvoiceEmail,
+} from '../lib/moco';
 import { hashEmail } from '../lib/deviceHash';
 import { badRequest, ok, unauthorized } from '../lib/responses';
 
@@ -51,7 +59,7 @@ webhookRoutes.post('/stripe', async (c) => {
         break;
       }
       case 'invoice.payment_succeeded': {
-        await handleInvoicePaid(env, event.data.object as Stripe.Invoice);
+        await handleInvoicePaid(env, event.data.object as Stripe.Invoice, c.executionCtx);
         break;
       }
       case 'invoice.payment_failed': {
@@ -129,6 +137,21 @@ const handleCheckoutCompleted = async (
     await setUserStripeCustomer(db(env), userId, customerId);
   }
 
+  // Optionaler Firmenname aus dem Checkout-Custom-Field → Customer-Metadata,
+  // damit wiederkehrende MOCO-Rechnungen ihn übernehmen können.
+  const companyField = session.custom_fields?.find((f) => f.key === 'company');
+  const company = companyField?.text?.value?.trim();
+  if (company && customerId) {
+    try {
+      await getStripe(env).customers.update(customerId, { metadata: { company } });
+    } catch (err) {
+      await logEvent(db(env), 'stripe.company_meta.error', {
+        customerId,
+        message: (err as Error).message,
+      });
+    }
+  }
+
   if (!subscriptionId || !customerId) {
     await logEvent(db(env), 'stripe.checkout_completed.missing_ids', {
       licenseId,
@@ -159,7 +182,11 @@ const handleCheckoutCompleted = async (
   );
 };
 
-const handleInvoicePaid = async (env: Bindings, invoice: Stripe.Invoice): Promise<void> => {
+const handleInvoicePaid = async (
+  env: Bindings,
+  invoice: Stripe.Invoice,
+  ctx?: ExecutionContext,
+): Promise<void> => {
   const subId = invoice.subscription;
   if (!subId || typeof subId !== 'string') return;
   const license = await findLicenseBySubscription(db(env), subId);
@@ -174,6 +201,117 @@ const handleInvoicePaid = async (env: Bindings, invoice: Stripe.Invoice): Promis
     { invoiceId: invoice.id, newExpiry },
     { license_id: license.id },
   );
+
+  // MOCO-Rechnung erstellen + versenden (best effort — darf die Lizenz-Aktivierung
+  // niemals brechen). Dedup pro Stripe-Invoice-ID gegen doppelte Rechnungen.
+  await maybeCreateMocoInvoice(env, invoice, license.id, ctx);
+};
+
+const maybeCreateMocoInvoice = async (
+  env: Bindings,
+  invoice: Stripe.Invoice,
+  licenseId: string,
+  ctx?: ExecutionContext,
+): Promise<void> => {
+  if (!env.MOCO_API_KEY || !env.MOCO_SUBDOMAIN || !invoice.id) return;
+  try {
+    if (await wasMocoInvoiceCreated(db(env), invoice.id)) return;
+
+    // Kundendaten: zuerst aus dem Invoice-Snapshot, Firma/Fallbacks aus dem Customer.
+    let name = invoice.customer_name ?? null;
+    let email = invoice.customer_email ?? null;
+    let address = invoice.customer_address ?? null;
+    let company: string | null = null;
+
+    const customerId =
+      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id ?? null;
+    if (customerId) {
+      try {
+        const cust = await getStripe(env).customers.retrieve(customerId);
+        if (!('deleted' in cust && cust.deleted)) {
+          name = name ?? cust.name ?? null;
+          email = email ?? cust.email ?? null;
+          address = address ?? cust.address ?? null;
+          const metaCompany = (cust.metadata?.company as string | undefined)?.trim();
+          company = metaCompany && metaCompany.length > 0 ? metaCompany : null;
+        }
+      } catch {
+        // Customer-Retrieve nicht kritisch — Invoice-Snapshot reicht.
+      }
+    }
+
+    if (!email) {
+      await logEvent(db(env), 'moco.invoice.skip_no_email', { invoiceId: invoice.id }, { license_id: licenseId });
+      return;
+    }
+
+    const input = {
+      email,
+      name,
+      company,
+      address: address
+        ? {
+            line1: address.line1,
+            line2: address.line2,
+            postalCode: address.postal_code,
+            city: address.city,
+            country: address.country,
+          }
+        : null,
+    };
+
+    const mocoCustomerId = await getOrCreateCustomer(env, input);
+    const created = await createBillSorterInvoice(env, {
+      customerId: mocoCustomerId,
+      input,
+      stripeInvoiceId: invoice.id,
+    });
+
+    await recordMocoInvoice(db(env), {
+      stripeInvoiceId: invoice.id,
+      mocoInvoiceId: created.id != null ? String(created.id) : null,
+      identifier: created.identifier,
+      licenseId,
+    });
+    await logEvent(
+      db(env),
+      'moco.invoice.created',
+      { invoiceId: invoice.id, mocoId: created.id, identifier: created.identifier },
+      { license_id: licenseId },
+    );
+
+    // PDF-Versand per Brevo — langsam (3s PDF-Wait + Download), daher via waitUntil
+    // im Hintergrund, damit der Webhook schnell antwortet.
+    if (created.id != null) {
+      const sendPromise = sendInvoiceEmail(env, {
+        invoiceId: created.id,
+        identifier: created.identifier ?? String(created.id),
+        customerEmail: email,
+        customerName: name ?? email,
+      })
+        .then((sent) =>
+          logEvent(db(env), sent ? 'moco.invoice.sent' : 'moco.invoice.send_failed', {
+            invoiceId: invoice.id,
+            identifier: created.identifier,
+          }, { license_id: licenseId }),
+        )
+        .catch((err) =>
+          logEvent(db(env), 'moco.invoice.send_error', {
+            invoiceId: invoice.id,
+            message: (err as Error).message,
+          }, { license_id: licenseId }),
+        );
+      if (ctx?.waitUntil) ctx.waitUntil(sendPromise);
+      else await sendPromise;
+    }
+  } catch (err) {
+    await logEvent(
+      db(env),
+      'moco.invoice.error',
+      { invoiceId: invoice.id, message: (err as Error).message },
+      { license_id: licenseId },
+    );
+  }
 };
 
 const handleInvoiceFailed = async (env: Bindings, invoice: Stripe.Invoice): Promise<void> => {

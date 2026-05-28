@@ -19,3 +19,11 @@ ADMIN_TOKEN=REPLACE_WITH_LONG_RANDOM_TOKEN
 
 # Anthropic API-Key — zentral, alle User laufen darüber
 ANTHROPIC_API_KEY=sk-ant-REPLACE_ME
+
+# MOCO — automatische Rechnung nach Stripe-Zahlung (gleicher Account wie SALIO)
+MOCO_SUBDOMAIN=REPLACE_ME
+MOCO_API_KEY=REPLACE_ME
+
+# Brevo — Rechnungs-Versand per Mail mit PDF-Anhang (gleicher Account wie SALIO)
+BREVO_API_KEY=REPLACE_ME
+BREVO_SENDER_EMAIL=REPLACE_ME

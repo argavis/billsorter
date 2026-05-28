@@ -8,7 +8,7 @@ let cached: Stripe | null = null;
 export const getStripe = (env: Pick<Bindings, 'STRIPE_SECRET_KEY'>): Stripe => {
   if (cached) return cached;
   cached = new Stripe(env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-12-18.acacia',
+    apiVersion: '2025-02-24.acacia',
     httpClient: Stripe.createFetchHttpClient(),
   });
   return cached;

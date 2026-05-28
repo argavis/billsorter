@@ -316,5 +316,43 @@ export const markWebhookProcessed = async (
     .run();
 };
 
+// ───── MOCO-Rechnungs-Dedup ─────
+
+export const wasMocoInvoiceCreated = async (
+  db: D1Database,
+  stripeInvoiceId: string,
+): Promise<boolean> => {
+  const row = await db
+    .prepare('SELECT stripe_invoice_id FROM moco_invoices WHERE stripe_invoice_id = ?')
+    .bind(stripeInvoiceId)
+    .first<{ stripe_invoice_id: string }>();
+  return row !== null;
+};
+
+export const recordMocoInvoice = async (
+  db: D1Database,
+  args: {
+    stripeInvoiceId: string;
+    mocoInvoiceId: string | null;
+    identifier: string | null;
+    licenseId: string | null;
+  },
+): Promise<void> => {
+  await db
+    .prepare(
+      `INSERT INTO moco_invoices (stripe_invoice_id, moco_invoice_id, identifier, license_id, created_at)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(stripe_invoice_id) DO NOTHING`,
+    )
+    .bind(
+      args.stripeInvoiceId,
+      args.mocoInvoiceId,
+      args.identifier,
+      args.licenseId,
+      nowIso(),
+    )
+    .run();
+};
+
 // Convenience access to Bindings.DB through Hono context (saves boilerplate).
 export const db = (env: Pick<Bindings, 'DB'>): D1Database => env.DB;
