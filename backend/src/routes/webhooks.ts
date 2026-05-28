@@ -26,7 +26,7 @@ import {
 import {
   createBillSorterInvoice,
   getOrCreateCustomer,
-  sendInvoiceEmail,
+  sendInvoiceViaMoco,
 } from '../lib/moco';
 import { hashEmail } from '../lib/deviceHash';
 import { badRequest, ok, unauthorized } from '../lib/responses';
@@ -280,10 +280,10 @@ const maybeCreateMocoInvoice = async (
       { license_id: licenseId },
     );
 
-    // PDF-Versand per Brevo — langsam (3s PDF-Wait + Download), daher via waitUntil
-    // im Hintergrund, damit der Webhook schnell antwortet.
+    // MOCO verschickt die Rechnung selbst per Mail an den Kunden. Netzwerk-Call →
+    // via waitUntil im Hintergrund, damit der Webhook schnell antwortet.
     if (created.id != null) {
-      const sendPromise = sendInvoiceEmail(env, {
+      const sendPromise = sendInvoiceViaMoco(env, {
         invoiceId: created.id,
         identifier: created.identifier ?? String(created.id),
         customerEmail: email,

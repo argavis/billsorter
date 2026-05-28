@@ -1,6 +1,6 @@
 // MOCO-Integration — automatische Rechnung nach Stripe-Zahlung.
 // TypeScript-Port der SALIO-Python-Integration (gleicher MOCO-Account + API-Key).
-// MOCO erzeugt nur das PDF; der Versand läuft über Brevo (gebrandete BillSorter-Mail).
+// MOCO erstellt die Rechnung UND verschickt sie selbst per Mail an den Kunden.
 
 import type { Bindings } from '../types';
 
@@ -139,59 +139,29 @@ export const createBillSorterInvoice = async (
   return { id: invoice?.id ?? null, identifier: invoice?.identifier ?? String(invoice?.id ?? '') };
 };
 
-// Rechnung als PDF von MOCO holen und per Brevo (BillSorter-Branding) an den Kunden senden.
-export const sendInvoiceEmail = async (
+// MOCO verschickt die Rechnung selbst per E-Mail an den Kunden (inkl. PDF).
+// POST /invoices/{id}/send_email — kein Brevo, kein PDF-Download durch uns.
+export const sendInvoiceViaMoco = async (
   env: Bindings,
   args: { invoiceId: number; identifier: string; customerEmail: string; customerName: string },
 ): Promise<boolean> => {
-  if (!env.BREVO_API_KEY || !env.BREVO_SENDER_EMAIL) return false;
+  const text = [
+    `Hallo ${args.customerName},`,
+    '',
+    'vielen Dank, dass du BillSorter nutzt. Anbei findest du deine Rechnung fuer dein',
+    'BillSorter Pro Abonnement. Der Betrag wurde bereits per Stripe eingezogen,',
+    'du musst nichts weiter tun.',
+    '',
+    'Bei Fragen antworte einfach auf diese Mail.',
+    '',
+    'Viele Gruesse',
+    'Dein BillSorter Team',
+  ].join('\n');
 
-  // MOCO braucht kurz, bis das PDF generiert ist.
-  await new Promise((r) => setTimeout(r, 3000));
-  const invoice = await mocoGet(env, `/invoices/${args.invoiceId}`);
-  const fileUrl = invoice?.file_url as string | undefined;
-  if (!fileUrl) return false;
-
-  const pdfResp = await fetch(fileUrl);
-  if (!pdfResp.ok) return false;
-  const pdfBytes = new Uint8Array(await pdfResp.arrayBuffer());
-  const pdfB64 = base64FromBytes(pdfBytes);
-
-  const html = [
-    '<div style="font-family:Inter,system-ui,sans-serif;max-width:560px;margin:auto;color:#1f2026">',
-    '<h2 style="color:#5923c2;margin:0 0 16px">Deine BillSorter Rechnung</h2>',
-    `<p>Hallo ${escapeHtml(args.customerName)},</p>`,
-    '<p>vielen Dank, dass du BillSorter nutzt.</p>',
-    '<p>Anbei findest du deine Rechnung fuer dein <strong>BillSorter Pro</strong> Abonnement. Der Betrag wurde bereits per Stripe eingezogen, du musst nichts weiter tun.</p>',
-    '<p>Bei Fragen antworte einfach auf diese Mail.</p>',
-    '<p style="margin-top:24px">Viele Gruesse<br>Dein BillSorter Team</p>',
-    '</div>',
-  ].join('');
-
-  const resp = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: { 'api-key': env.BREVO_API_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      sender: { name: 'BillSorter', email: env.BREVO_SENDER_EMAIL },
-      to: [{ email: args.customerEmail, name: args.customerName }],
-      subject: `Deine Rechnung ${args.identifier} - BillSorter`,
-      htmlContent: html,
-      attachment: [{ name: `${args.identifier}_BillSorter_Rechnung.pdf`, content: pdfB64 }],
-    }),
+  await mocoPost(env, `/invoices/${args.invoiceId}/send_email`, {
+    subject: `Deine Rechnung ${args.identifier} - BillSorter`,
+    text,
+    emails_to: args.customerEmail,
   });
-  return resp.status >= 200 && resp.status < 300;
-};
-
-const escapeHtml = (s: string): string =>
-  s.replace(/[&<>"']/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string,
-  );
-
-const base64FromBytes = (bytes: Uint8Array): string => {
-  let binary = '';
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
-  }
-  return btoa(binary);
+  return true;
 };
