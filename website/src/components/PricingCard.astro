@@ -7,9 +7,9 @@ type Props = { lang: 'de' | 'en' };
 const { lang } = Astro.props;
 const dict = lang === 'de' ? de : en;
 
-// Download-URLs — vorerst GitHub Releases (Phase 6)
-const macUrl = 'https://github.com/argavis/billsorter-releases/releases/latest/download/BillSorter.dmg';
-const winUrl = 'https://github.com/argavis/billsorter-releases/releases/latest/download/BillSorter-Setup.exe';
+// Download-URLs — GitHub Releases v0.1.0
+const macUrl = 'https://github.com/argavis/billsorter/releases/download/v0.1.0/BillSorter-0.1.0.dmg';
+const winUrl = 'https://github.com/argavis/billsorter/releases/download/v0.1.0/BillSorter-Setup-0.1.0.exe';
 ---
 <section
   id="pricing"

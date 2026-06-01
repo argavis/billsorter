@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "wrangler pages deploy dist --project-name=billsorter-www",
+    "deploy": "npx wrangler pages deploy dist --project-name=billsorter-www",
     "typecheck": "astro check"
   },
   "dependencies": {
