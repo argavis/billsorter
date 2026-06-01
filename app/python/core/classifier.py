@@ -12,6 +12,8 @@ from dataclasses import dataclass
 
 import httpx
 
+from core.ssl_ctx import ca_bundle
+
 log = logging.getLogger("billsorter.classifier")
 
 INVOICE_KEYWORDS = (
@@ -48,7 +50,7 @@ async def is_invoice(
 
     url = backend_url.rstrip("/") + "/v1/llm/classify"
     try:
-        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        async with httpx.AsyncClient(timeout=timeout_seconds, verify=ca_bundle()) as client:
             res = await client.post(
                 url,
                 headers={"content-type": "application/json"},
@@ -88,7 +90,7 @@ async def test_backend_reachable(
 ) -> tuple[bool, str | None]:
     """Schneller Smoke gegen Backend-Health."""
     try:
-        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+        async with httpx.AsyncClient(timeout=timeout_seconds, verify=ca_bundle()) as client:
             res = await client.get(backend_url.rstrip("/") + "/health")
             if res.status_code == 200:
                 return True, None

@@ -17,6 +17,8 @@ from email.message import Message
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
+from core.ssl_ctx import ssl_context
+
 log = logging.getLogger("billsorter.imap")
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".png", ".jpg", ".jpeg", ".xml"}
@@ -107,7 +109,8 @@ def days_ago(days: int) -> datetime:
 # ───── internals ─────
 
 def _connect(host: str, port: int, email_addr: str, password: str) -> imaplib.IMAP4_SSL:
-    context = ssl.create_default_context()
+    # Gebündeltes certifi-CA-Bundle nutzen — sonst CERTIFICATE_VERIFY_FAILED im PyInstaller-Bundle.
+    context = ssl_context()
     imap = imaplib.IMAP4_SSL(host, port, ssl_context=context, timeout=30)
     imap.login(email_addr, password)
     return imap

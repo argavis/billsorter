@@ -10,7 +10,14 @@
 import sys
 from pathlib import Path
 
+import certifi
+
 block_cipher = None
+
+# CA-Bundle (cacert.pem) mit ins Bundle packen → fixt CERTIFICATE_VERIFY_FAILED bei
+# IMAP/HTTPS im --onefile-Build. Landet unter <_MEIPASS>/certifi/cacert.pem; core/ssl_ctx.py
+# zeigt zur Laufzeit darauf.
+DATAS = [(certifi.where(), "certifi")]
 
 HERE = Path(SPECPATH).resolve()  # type: ignore[name-defined]
 ROOT = HERE.parent
@@ -19,8 +26,9 @@ a = Analysis(
     [str(ROOT / "main.py")],
     pathex=[str(ROOT)],
     binaries=[],
-    datas=[],
+    datas=DATAS,
     hiddenimports=[
+        "certifi",
         "uvicorn.logging",
         "uvicorn.loops",
         "uvicorn.loops.auto",

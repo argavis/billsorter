@@ -22,6 +22,12 @@ from pathlib import Path
 
 import uvicorn
 
+from core.ssl_ctx import install_ca_bundle
+
+# CA-Bundle global setzen, BEVOR irgendeine TLS-Verbindung (IMAP/HTTPS) aufgebaut wird.
+# Fixt CERTIFICATE_VERIFY_FAILED im PyInstaller-Bundle.
+install_ca_bundle()
+
 from api.routes import build_app
 
 log = logging.getLogger("billsorter")

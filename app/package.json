@@ -1,6 +1,6 @@
 {
   "name": "billsorter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "BillSorter — KI-Rechnungs-Sortierer für E-Mail-Postfächer",
   "author": "ARGAVIS",
