@@ -3,7 +3,7 @@
 
 import { logger } from './logger';
 
-const DEFAULT_API_URL = 'https://api.billsorter.de';
+const DEFAULT_API_URL = 'https://api.billsorter.app';
 
 export const apiBaseUrl = (): string =>
   process.env.BILLSORTER_API_URL ?? DEFAULT_API_URL;

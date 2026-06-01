@@ -115,7 +115,14 @@ def _connect(host: str, port: int, email_addr: str, password: str) -> imaplib.IM
 
 def _iter_attachments(msg: Message):
     for part in msg.walk():
-        if part.get_content_disposition() == "attachment":
+        if part.get_content_maintype() == "multipart":
+            continue
+        disposition = (part.get_content_disposition() or "").lower()
+        filename = part.get_filename()
+        # Echte Anhänge UND inline eingebettete Dateien mit Dateiname (z.B. Inline-PDF-Rechnungen,
+        # die viele Shops als 'Content-Disposition: inline' verschicken). Der reine Mail-Body
+        # (text/plain, text/html) hat keinen Dateinamen und wird so übersprungen.
+        if disposition == "attachment" or filename:
             yield part
 
 

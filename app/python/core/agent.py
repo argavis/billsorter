@@ -118,7 +118,9 @@ class ScanRunner:
             self._log_bus.emit(
                 job.id,
                 "success",
-                f"Fertig — {job.stats.saved} gespeichert, {job.stats.skipped_not_invoice} übersprungen, {job.stats.skipped_duplicate} Duplikate",
+                f"Fertig — {job.stats.found} Anhänge gefunden, {job.stats.saved} gespeichert, "
+                f"{job.stats.skipped_not_invoice} übersprungen, {job.stats.skipped_duplicate} Duplikate, "
+                f"{job.stats.errors} Fehler",
             )
         except Exception as exc:  # noqa: BLE001
             job.state = "failed"
