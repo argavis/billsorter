@@ -139,12 +139,16 @@ export const createBillSorterInvoice = async (
   return { id: invoice?.id ?? null, identifier: invoice?.identifier ?? String(invoice?.id ?? '') };
 };
 
+export type SendResult = { ok: boolean; mailId: number | null; detail: string };
+
 // MOCO verschickt die Rechnung selbst per E-Mail an den Kunden (inkl. PDF).
 // POST /invoices/{id}/send_email — kein Brevo, kein PDF-Download durch uns.
+// WICHTIG (SALIO): emails_to MUSS ein String sein (Array → 422), text ist Pflicht,
+// und die Antwort MUSS ausgewertet werden — niemals blind "sent" loggen.
 export const sendInvoiceViaMoco = async (
   env: Bindings,
   args: { invoiceId: number; identifier: string; customerEmail: string; customerName: string },
-): Promise<boolean> => {
+): Promise<SendResult> => {
   const text = [
     `Hallo ${args.customerName},`,
     '',
@@ -158,10 +162,20 @@ export const sendInvoiceViaMoco = async (
     'Dein BillSorter Team',
   ].join('\n');
 
-  await mocoPost(env, `/invoices/${args.invoiceId}/send_email`, {
+  // mocoPost wirft bei !res.ok (HTTP-Fehler). Erreicht den Code unten nur bei 2xx —
+  // wir werten die Antwort trotzdem aus, statt blind Erfolg anzunehmen.
+  const res = await mocoPost(env, `/invoices/${args.invoiceId}/send_email`, {
     subject: `Deine Rechnung ${args.identifier} - BillSorter`,
     text,
     emails_to: args.customerEmail,
   });
-  return true;
+
+  // MOCO liefert bei Erfolg das versendete Email-Objekt zurück.
+  const mailId =
+    res && typeof res === 'object' && typeof res.id === 'number' ? (res.id as number) : null;
+  const ok = res != null && typeof res === 'object' && !('error' in res);
+  const detail = ok
+    ? `mailId=${mailId ?? 'n/a'}`
+    : `unexpected response: ${JSON.stringify(res).slice(0, 200)}`;
+  return { ok, mailId, detail };
 };

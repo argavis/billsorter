@@ -58,6 +58,10 @@ webhookRoutes.post('/stripe', async (c) => {
         await handleCheckoutCompleted(env, event.data.object as Stripe.Checkout.Session);
         break;
       }
+      // Stripe feuert je nach Konfiguration invoice.paid und/oder
+      // invoice.payment_succeeded — beide auf denselben Handler. Die MOCO-Dedup
+      // pro Stripe-Invoice-ID verhindert doppelte Rechnungen.
+      case 'invoice.paid':
       case 'invoice.payment_succeeded': {
         await handleInvoicePaid(env, event.data.object as Stripe.Invoice, c.executionCtx);
         break;
@@ -289,10 +293,12 @@ const maybeCreateMocoInvoice = async (
         customerEmail: email,
         customerName: name ?? email,
       })
-        .then((sent) =>
-          logEvent(db(env), sent ? 'moco.invoice.sent' : 'moco.invoice.send_failed', {
+        .then((result) =>
+          logEvent(db(env), result.ok ? 'moco.invoice.sent' : 'moco.invoice.send_failed', {
             invoiceId: invoice.id,
             identifier: created.identifier,
+            mailId: result.mailId,
+            detail: result.detail,
           }, { license_id: licenseId }),
         )
         .catch((err) =>
