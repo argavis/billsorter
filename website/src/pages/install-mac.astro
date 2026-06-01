@@ -5,33 +5,102 @@ import en from '@content/en.json';
 
 const lang: 'de' | 'en' = 'de';
 const dict = lang === 'de' ? de : en;
+
+// Schritte hier bewusst inline (ohne data-i18n-key), damit der Runtime-i18n-Swapper
+// die ausführliche Gatekeeper-Anleitung nicht mit dem kürzeren JSON-Text überschreibt.
+const steps = [
+  {
+    icon: '⬇️',
+    title: 'DMG öffnen & App installieren',
+    body: 'Lade die <code>.dmg</code>-Datei herunter und öffne sie per Doppelklick. Ziehe <strong>BillSorter</strong> in den <strong>Programme</strong>-Ordner.',
+    shot: 'DMG-Fenster: BillSorter wird in den Programme-Ordner gezogen',
+    variant: 'default',
+  },
+  {
+    icon: '⚠️',
+    title: 'Erste Warnung — NICHT löschen!',
+    body: 'Beim ersten Start meldet macOS evtl. <em>„BillSorter ist beschädigt und kann nicht geöffnet werden"</em>. Das ist nur der fehlende Apple-Signatur-Hinweis, die App ist in Ordnung. Klicke <strong>„Abbrechen"</strong> — <strong>niemals „In den Papierkorb legen"</strong>.',
+    shot: 'macOS-Warndialog mit hervorgehobenem „Abbrechen"-Button',
+    variant: 'warning',
+  },
+  {
+    icon: '⚙️',
+    title: 'In den Einstellungen freigeben',
+    body: 'Öffne  → <strong>Systemeinstellungen</strong> → <strong>Datenschutz &amp; Sicherheit</strong>. Scrolle ganz nach unten. Dort steht „BillSorter wurde blockiert". Klicke <strong>„Trotzdem öffnen"</strong> und bestätige mit Touch ID oder Passwort.',
+    shot: 'Datenschutz & Sicherheit: Button „BillSorter trotzdem öffnen" ganz unten',
+    variant: 'default',
+  },
+  {
+    icon: '✅',
+    title: 'Fertig — App startet',
+    body: 'Beim nächsten Öffnen einmal <strong>„Öffnen"</strong> bestätigen. BillSorter startet ab jetzt normal — der Setup-Wizard begrüßt dich.',
+    shot: 'BillSorter läuft, Setup-Wizard ist sichtbar',
+    variant: 'default',
+  },
+];
 ---
 <Base lang={lang} title={dict.install_mac.title}>
   <article class="container-x py-32 max-w-3xl">
-    <h1 class="text-sect-1 font-bold" data-i18n-key="install_mac.title">{dict.install_mac.title}</h1>
-    <p class="mt-4 text-lg text-ink-500" data-i18n-key="install_mac.subtitle">{dict.install_mac.subtitle}</p>
+    <h1 class="text-sect-1 font-bold">Mac-Installation</h1>
+    <p class="mt-4 text-lg text-ink-500">
+      Einmaliger Sicherheits-Hinweis von macOS — in unter einer Minute erledigt. BillSorter ist
+      (noch) nicht von Apple notarisiert, deshalb der kurze Umweg.
+    </p>
 
-    <ol class="mt-12 space-y-8 text-lg">
-      <li class="flex gap-6">
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">1</span>
-        <span data-i18n-key="install_mac.step1">{dict.install_mac.step1}</span>
-      </li>
-      <li class="flex gap-6">
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">2</span>
-        <span data-i18n-key="install_mac.step2">{dict.install_mac.step2}</span>
-      </li>
-      <li class="flex gap-6">
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">3</span>
-        <span data-i18n-key="install_mac.step3">{dict.install_mac.step3}</span>
-      </li>
-      <li class="flex gap-6">
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white font-bold">4</span>
-        <span data-i18n-key="install_mac.step4">{dict.install_mac.step4}</span>
-      </li>
+    <ol class="mt-12 space-y-6">
+      {steps.map((step, i) => (
+        <li
+          class={`rounded-2xl border p-6 ${
+            step.variant === 'warning'
+              ? 'border-amber-300 bg-amber-50'
+              : 'border-ink-100 bg-white'
+          }`}
+        >
+          <div class="flex items-start gap-5">
+            <span
+              class={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-bold text-white ${
+                step.variant === 'warning' ? 'bg-amber-500' : 'bg-brand-600'
+              }`}
+            >
+              {i + 1}
+            </span>
+            <div class="min-w-0 flex-1">
+              <h2 class="flex items-center gap-2 text-xl font-semibold">
+                <span aria-hidden="true">{step.icon}</span>
+                <span>{step.title}</span>
+              </h2>
+              <p class="mt-2 text-ink-600" set:html={step.body}></p>
+
+              <!-- Screenshot-Platzhalter -->
+              <figure
+                class="mt-4 flex aspect-[16/9] items-center justify-center rounded-xl border-2 border-dashed border-ink-200 bg-ink-50 text-center"
+              >
+                <figcaption class="px-6 text-sm text-ink-400">
+                  📷 Screenshot: {step.shot}
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </li>
+      ))}
     </ol>
 
-    <p class="mt-12 rounded-2xl bg-brand-50 p-6 text-sm text-brand-800" data-i18n-key="install_mac.note">{dict.install_mac.note}</p>
+    <!-- Ehrlicher Fallback für den „beschädigt"-Fall ohne „Trotzdem öffnen"-Button -->
+    <div class="mt-10 rounded-2xl border border-ink-200 bg-ink-50 p-6">
+      <h3 class="font-semibold">Erscheint kein „Trotzdem öffnen"-Button?</h3>
+      <p class="mt-2 text-sm text-ink-600">
+        Bei manchen macOS-Versionen bleibt die „beschädigt"-Warnung hartnäckig. Dann hebe die
+        Download-Sperre einmalig im Terminal auf (Programme → Dienstprogramme → Terminal):
+      </p>
+      <pre class="mt-3 overflow-x-auto rounded-lg bg-ink-900 p-4 text-sm text-white"><code>xattr -dr com.apple.quarantine /Applications/BillSorter.app</code></pre>
+      <p class="mt-2 text-sm text-ink-600">Danach öffnet die App ganz normal per Doppelklick.</p>
+    </div>
 
-    <a href="/" class="mt-12 inline-block text-brand-700 hover:underline">← Home</a>
+    <p class="mt-10 rounded-2xl bg-brand-50 p-6 text-sm text-brand-800">
+      Die offizielle Apple-Notarisierung reichen wir in einem späteren Update nach — dann
+      entfällt dieser Schritt komplett.
+    </p>
+
+    <a href="/" class="mt-12 inline-block text-brand-700 hover:underline">← Zur Startseite</a>
   </article>
 </Base>
