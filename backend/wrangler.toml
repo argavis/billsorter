@@ -40,19 +40,19 @@ PLAN_INTERVAL_DAYS = "30"
 name = "billsorter-api"
 workers_dev = false
 routes = [
-  { pattern = "api.billsorter.de/*", custom_domain = true }
+  { pattern = "api.billsorter.app", custom_domain = true }
 ]
 
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "billsorter-prod"
-database_id = "REPLACE_WITH_PROD_D1_ID"
+database_id = "f055f6df-09ed-4e92-b3bd-e29d93be7a62"
 migrations_dir = "src/db/migrations"
 
 [env.production.vars]
 ENVIRONMENT = "production"
-WEB_URL = "https://billsorter.de"
-API_URL = "https://api.billsorter.de"
+WEB_URL = "https://billsorter.app"
+API_URL = "https://api.billsorter.app"
 APP_DEEP_LINK_SCHEME = "billsorter"
 TRIAL_DAYS = "7"
 GRACE_DAYS = "7"
