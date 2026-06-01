@@ -6,7 +6,6 @@ node_modules/
 
 # Build artefacts
 dist/
-build/
 out/
 *.tsbuildinfo
 .wrangler/
@@ -19,8 +18,10 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
-python/build/dist/
-python/build/build/
+
+# PyInstaller work output (keep the spec — CI needs it)
+app/python/build/*
+!app/python/build/pyinstaller.spec
 
 # Electron build output
 app/dist/
@@ -32,6 +33,9 @@ userData/
 *.log
 logs/
 secrets.json
+
+# Claude Code local state (per-machine)
+.claude/
 
 # OS + Editor
 .DS_Store
@@ -50,3 +54,6 @@ Thumbs.db
 *.key
 private*.pem
 *-private.pem
+
+# Exception: public JWT key is required by the build (safe to commit)
+!app/resources/jwt-public-key.pem

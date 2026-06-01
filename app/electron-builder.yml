@@ -34,7 +34,7 @@ mac:
   category: public.app-category.productivity
   target:
     - target: dmg
-      arch: [universal]
+      arch: [arm64]  # arm64-only: PyInstaller-Sidecar ist host-arch. Universal (arm64+x64) braucht zusätzlich x64-Python-Sidecar via Rosetta — siehe scripts/build-release.sh Kommentar.
   identity: null  # unsigned for MVP
   hardenedRuntime: false
   gatekeeperAssess: false

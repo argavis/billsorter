@@ -1,0 +1,14 @@
+{
+  "name": "billsorter-release",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Release-Build-Orchestrierung für BillSorter (Electron App + Python Sidecar)",
+  "author": "ARGAVIS",
+  "license": "Proprietary",
+  "scripts": {
+    "build:release": "bash scripts/build-release.sh",
+    "build:release:mac": "bash scripts/build-release.sh --mac",
+    "build:release:win": "bash scripts/build-release.sh --win",
+    "build:sidecar": "bash scripts/build-release.sh --sidecar-only"
+  }
+}
