@@ -26,6 +26,7 @@ import { registerFilesystemIpc } from './ipc/filesystem';
 import { registerSchedulerIpc } from './ipc/scheduler';
 import { registerSystemIpc } from './ipc/system';
 import { setupDeepLinkProtocol, checkPendingDeepLink, flushPendingDeepLink } from './ipc/deepLink';
+import { initAutoUpdater } from './lib/autoUpdater';
 
 const isScheduledRun = process.argv.includes('--scheduled-run');
 
@@ -197,6 +198,9 @@ app.whenReady().then(async () => {
   mainWindow = createWindow();
   flushPendingDeepLink();
   checkPendingDeepLink(process.argv);
+
+  // Auto-Update-Prüfung — nicht bei geplanten Hintergrund-Läufen (kein UI/Dialog).
+  if (!isScheduledRun) initAutoUpdater();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

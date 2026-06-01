@@ -67,4 +67,8 @@ nsis:
   shortcutName: BillSorter
   artifactName: BillSorter-Setup-${version}.exe
 
-publish: null  # Auto-Update kommt v1.1
+# Auto-Update via electron-updater — GitHub Releases als Provider.
+publish:
+  provider: github
+  owner: argavis
+  repo: billsorter

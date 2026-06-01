@@ -37,11 +37,15 @@ jobs:
       - name: Build release (Mac DMG + Sidecar)
         run: npm run build:release:mac
 
-      - name: Upload DMG
+      - name: Upload DMG + update metadata
         uses: actions/upload-artifact@v4
         with:
           name: billsorter-mac-arm64
-          path: app/release/**/*.dmg
+          # latest-mac.yml + .blockmap werden von electron-updater fürs Auto-Update gebraucht.
+          path: |
+            app/release/**/*.dmg
+            app/release/**/*.blockmap
+            app/release/**/latest-mac.yml
           if-no-files-found: error
 
   # =========================================================================
@@ -68,11 +72,15 @@ jobs:
       - name: Build release (Windows EXE + Sidecar)
         run: npm run build:release:win
 
-      - name: Upload EXE
+      - name: Upload EXE + update metadata
         uses: actions/upload-artifact@v4
         with:
           name: billsorter-win-x64
-          path: app/release/**/*.exe
+          # latest.yml + .blockmap werden von electron-updater fürs Auto-Update gebraucht.
+          path: |
+            app/release/**/*.exe
+            app/release/**/*.blockmap
+            app/release/**/latest.yml
           if-no-files-found: error
 
   # =========================================================================
@@ -94,3 +102,6 @@ jobs:
           files: |
             dist-artifacts/**/*.dmg
             dist-artifacts/**/*.exe
+            dist-artifacts/**/*.blockmap
+            dist-artifacts/**/latest-mac.yml
+            dist-artifacts/**/latest.yml
