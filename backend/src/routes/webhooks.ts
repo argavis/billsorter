@@ -28,6 +28,7 @@ import {
   getOrCreateCustomer,
   sendInvoiceViaMoco,
 } from '../lib/moco';
+import { extractCountryVatId, resolveTaxRate } from '../lib/tax';
 import { hashEmail } from '../lib/deviceHash';
 import { badRequest, ok, unauthorized } from '../lib/responses';
 
@@ -264,11 +265,28 @@ const maybeCreateMocoInvoice = async (
         : null,
     };
 
+    // Dynamische Umsatzsteuer: Land + USt-IdNr aus dem Stripe-Invoice-Snapshot.
+    const { country, hasVatId } = extractCountryVatId(invoice);
+    const taxRate = resolveTaxRate(country, hasVatId);
+    // Brutto = von Stripe (inkl. automatic_tax) tatsächlich berechneter Gesamtbetrag.
+    // Fallback auf den Listenpreis 6,99 EUR netto, falls der Snapshot keinen Betrag hat.
+    const rawGross = (invoice.total ?? invoice.amount_paid ?? 0) / 100;
+    const grossAmount =
+      rawGross > 0
+        ? rawGross
+        : taxRate > 0
+          ? Math.round(6.99 * (1 + taxRate / 100) * 100) / 100
+          : 6.99;
+
     const mocoCustomerId = await getOrCreateCustomer(env, input);
     const created = await createBillSorterInvoice(env, {
       customerId: mocoCustomerId,
       input,
       stripeInvoiceId: invoice.id,
+      taxRate,
+      grossAmount,
+      hasVatId,
+      country,
     });
 
     await recordMocoInvoice(db(env), {

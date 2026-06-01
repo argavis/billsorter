@@ -3,6 +3,7 @@
 // MOCO erstellt die Rechnung UND verschickt sie selbst per Mail an den Kunden.
 
 import type { Bindings } from '../types';
+import { taxNote } from './tax';
 
 const PRODUCT = {
   title: 'BillSorter Pro — Monatliches Abonnement',
@@ -10,7 +11,6 @@ const PRODUCT = {
   unitPrice: 6.99,
   unit: 'Monat',
 };
-const TAX_RATE = 19.0;
 
 type CustomerInput = {
   email: string;
@@ -95,16 +95,29 @@ export type CreatedInvoice = { id: number | null; identifier: string | null };
 
 export const createBillSorterInvoice = async (
   env: Bindings,
-  args: { customerId: number; input: CustomerInput; stripeInvoiceId: string },
+  args: {
+    customerId: number;
+    input: CustomerInput;
+    stripeInvoiceId: string;
+    taxRate: number;
+    grossAmount: number;
+    hasVatId: boolean;
+    country: string | null;
+  },
 ): Promise<CreatedInvoice> => {
   const today = new Date().toISOString().slice(0, 10);
   const { from, to, label } = monthBounds();
-  const net = PRODUCT.unitPrice;
-  const gross = Math.round(net * (1 + TAX_RATE / 100) * 100) / 100;
 
+  // grossAmount = von Stripe (inkl. automatic_tax) tatsächlich berechneter Bruttobetrag.
+  // Netto rückrechnen, wenn Steuer anfällt; bei 0% ist brutto == netto.
+  const gross = args.grossAmount;
+  const net =
+    args.taxRate > 0 ? Math.round((gross / (1 + args.taxRate / 100)) * 100) / 100 : gross;
+
+  const note = taxNote(args.taxRate, args.hasVatId, args.country);
   const footer =
     `<div>Vielen Dank, dass du BillSorter nutzt.</div>` +
-    `<div>Der Betrag von ${gross.toFixed(2)} EUR (inkl. ${TAX_RATE}% MwSt.) wurde bereits per Stripe eingezogen.</div>` +
+    `<div>Der Betrag von ${gross.toFixed(2)} EUR (${note}) wurde bereits per Stripe eingezogen.</div>` +
     `<div>Stripe Invoice: ${args.stripeInvoiceId}</div>`;
 
   const payload = {
@@ -116,7 +129,7 @@ export const createBillSorterInvoice = async (
     service_period_to: to,
     recipient_address: buildRecipientAddress(args.input),
     currency: 'EUR',
-    tax: TAX_RATE,
+    tax: args.taxRate,
     discount: 0,
     cash_discount: 0,
     status: 'created',
