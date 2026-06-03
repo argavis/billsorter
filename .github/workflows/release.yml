@@ -36,6 +36,9 @@ jobs:
 
       - name: Build release (Mac DMG + Sidecar)
         run: npm run build:release:mac
+        env:
+          # electron-builder liest GitHub bei publish:github-Config — Token automatisch von Actions.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload DMG + update metadata
         uses: actions/upload-artifact@v4
@@ -71,6 +74,9 @@ jobs:
 
       - name: Build release (Windows EXE + Sidecar)
         run: npm run build:release:win
+        env:
+          # electron-builder liest GitHub bei publish:github-Config — Token automatisch von Actions.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload EXE + update metadata
         uses: actions/upload-artifact@v4
