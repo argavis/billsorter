@@ -78,7 +78,7 @@ const ProviderForm = ({
     <Card className="p-4">
       <div className="mb-3 flex items-center justify-between">
         <div className="font-medium text-sm">{preset?.label ?? draft.type}</div>
-        {preset?.requiresAppPassword && preset.helpUrl && (
+        {preset?.helpUrl && (preset.requiresAppPassword || customHost) && (
           <a
             href="#"
             onClick={(e) => {
@@ -87,7 +87,7 @@ const ProviderForm = ({
             }}
             className="text-xs text-brand-700 hover:text-brand-800 inline-flex items-center gap-1"
           >
-            {t('wizard.step_credentials.create_app_pw')}
+            {t(customHost ? 'wizard.step_credentials.find_server' : 'wizard.step_credentials.create_app_pw')}
             <ExternalLink className="h-3 w-3" />
           </a>
         )}

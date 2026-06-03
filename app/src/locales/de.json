@@ -65,6 +65,7 @@
       "host": "IMAP-Server",
       "port": "Port",
       "create_app_pw": "App-Passwort erstellen",
+      "find_server": "Wo finde ich die Serveradresse?",
       "empty": "Keine Provider ausgewählt — gehe einen Schritt zurück."
     },
     "step_schedule": {

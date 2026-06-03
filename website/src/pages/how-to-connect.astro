@@ -1,0 +1,182 @@
+---
+import Base from '@/layouts/Base.astro';
+
+const lang: 'de' | 'en' = 'de';
+
+type Provider = {
+  name: string;
+  host: string;
+  port: string;
+  appPassword: boolean;
+  steps: string[];
+  link?: { label: string; url: string };
+};
+
+const providers: Provider[] = [
+  {
+    name: 'Gmail',
+    host: 'imap.gmail.com',
+    port: '993 (SSL/TLS)',
+    appPassword: true,
+    steps: [
+      'Aktiviere die 2-Faktor-Authentifizierung in deinem Google-Konto (Voraussetzung für App-Passwörter).',
+      'Öffne myaccount.google.com/apppasswords und melde dich an.',
+      'Erstelle ein neues App-Passwort, z. B. mit dem Namen „BillSorter".',
+      'Google zeigt dir ein 16-stelliges Passwort. Trage dieses (ohne Leerzeichen) in BillSorter als Passwort ein, nicht dein normales Google-Passwort.',
+    ],
+    link: { label: 'Google: App-Passwörter', url: 'https://support.google.com/accounts/answer/185833' },
+  },
+  {
+    name: 'Outlook (Microsoft 365)',
+    host: 'outlook.office365.com',
+    port: '993 (SSL/TLS)',
+    appPassword: true,
+    steps: [
+      'Aktiviere die zweistufige Überprüfung in deinem Microsoft-Konto.',
+      'Öffne die Sicherheitseinstellungen und erstelle ein App-Passwort.',
+      'Trage das generierte App-Passwort in BillSorter ein.',
+      'Hinweis: Manche Geschäfts-/Schulkonten erlauben IMAP nur, wenn der Administrator es freigeschaltet hat.',
+    ],
+    link: { label: 'Microsoft: App-Passwörter', url: 'https://support.microsoft.com/account-billing/manage-app-passwords-for-two-step-verification-d6dc8c6d-4bf7-4851-ad95-6d07799387e9' },
+  },
+  {
+    name: 'iCloud (Apple Mail)',
+    host: 'imap.mail.me.com',
+    port: '993 (SSL/TLS)',
+    appPassword: true,
+    steps: [
+      'Aktiviere die Zwei-Faktor-Authentifizierung für deine Apple-ID.',
+      'Öffne account.apple.com, melde dich an und gehe zu „Anmeldung und Sicherheit" → „App-spezifische Passwörter".',
+      'Erstelle ein neues Passwort, z. B. „BillSorter".',
+      'Trage das angezeigte Passwort in BillSorter ein. Als E-Mail nutzt du deine vollständige iCloud-Adresse.',
+    ],
+    link: { label: 'Apple: App-spezifische Passwörter', url: 'https://support.apple.com/de-de/102654' },
+  },
+  {
+    name: 'Yahoo Mail',
+    host: 'imap.mail.yahoo.com',
+    port: '993 (SSL/TLS)',
+    appPassword: true,
+    steps: [
+      'Öffne die Yahoo-Kontosicherheit unter login.yahoo.com/account/security.',
+      'Erstelle ein App-Passwort („App-Passwort generieren").',
+      'Trage das generierte Passwort in BillSorter ein, nicht dein normales Yahoo-Passwort.',
+    ],
+    link: { label: 'Yahoo: App-Passwort', url: 'https://help.yahoo.com/kb/SLN15241.html' },
+  },
+  {
+    name: 'GMX',
+    host: 'imap.gmx.net',
+    port: '993 (SSL/TLS)',
+    appPassword: false,
+    steps: [
+      'Melde dich im GMX-Webmail an und öffne „Einstellungen" → „POP3/IMAP Abruf".',
+      'Aktiviere den Haken bei „IMAP-Zugriff erlauben" und speichere.',
+      'In BillSorter nutzt du deine GMX-Adresse und dein normales GMX-Passwort.',
+    ],
+    link: { label: 'GMX: IMAP aktivieren', url: 'https://hilfe.gmx.net/pop-imap/imap.html' },
+  },
+  {
+    name: 'Web.de',
+    host: 'imap.web.de',
+    port: '993 (SSL/TLS)',
+    appPassword: false,
+    steps: [
+      'Melde dich im Web.de-Postfach an und öffne „Einstellungen" → „POP3/IMAP Abruf".',
+      'Aktiviere „IMAP-Zugriff erlauben" und speichere.',
+      'In BillSorter nutzt du deine Web.de-Adresse und dein normales Passwort.',
+    ],
+    link: { label: 'Web.de: IMAP aktivieren', url: 'https://hilfe.web.de/pop-imap/imap.html' },
+  },
+  {
+    name: 'IONOS',
+    host: 'imap.ionos.de',
+    port: '993 (SSL/TLS)',
+    appPassword: false,
+    steps: [
+      'IMAP ist bei IONOS standardmäßig aktiv.',
+      'In BillSorter nutzt du deine vollständige E-Mail-Adresse und das zugehörige Postfach-Passwort.',
+      'Server: imap.ionos.de, Port 993. Bei eigener Domain bleibt der Server gleich.',
+    ],
+    link: { label: 'IONOS: IMAP-Einstellungen', url: 'https://www.ionos.de/hilfe/e-mail/e-mail-mit-dem-pc-am-mac-oder-mobilgeraet-einrichten/imap-einstellungen-fuer-ionos-mail/' },
+  },
+  {
+    name: 'Netcup / eigener Mailserver (Custom IMAP)',
+    host: 'z. B. mail.deinedomain.de',
+    port: '993 (SSL/TLS)',
+    appPassword: false,
+    steps: [
+      'Die Serveradresse findest du im Kundenbereich deines Hosters oder in einer bestehenden Mail-App.',
+      'Bei Netcup lautet der IMAP-Server typischerweise „<Servername>.netcup.net" (z. B. aus dem Webhosting-Controlpanel) oder mail.deinedomain.de.',
+      'Nutze Port 993 mit SSL/TLS. Falls dein Server nur STARTTLS auf Port 143 anbietet, frage deinen Anbieter nach dem SSL-Port.',
+      'Als E-Mail und Passwort nutzt du die Zugangsdaten deines Postfachs (oft die vollständige E-Mail-Adresse als Benutzername).',
+    ],
+    link: { label: 'Netcup: Mail-Einstellungen', url: 'https://www.netcup-wiki.de/wiki/E-Mail_Einstellungen' },
+  },
+];
+---
+<Base lang={lang} title="Verbindung einrichten">
+  <article class="container-x py-32 prose prose-ink max-w-3xl">
+    <h1 class="text-sect-1 font-bold">Verbindung einrichten</h1>
+    <p class="text-ink-500 mt-2">
+      So verbindest du dein E-Mail-Postfach mit BillSorter. Wähle deinen Anbieter aus der Liste.
+    </p>
+
+    <div class="not-prose mt-8 rounded-xl border border-ink-200 bg-ink-50 p-4 text-sm text-ink-600">
+      <strong class="text-ink-900">Allgemein:</strong> BillSorter verbindet sich per IMAP über SSL/TLS
+      (Port 993). Deine Zugangsdaten werden ausschließlich lokal im Schlüsselbund deines Betriebssystems
+      gespeichert und nie an unsere Server übertragen. Bei vielen Anbietern brauchst du statt deines
+      normalen Passworts ein <strong class="text-ink-900">App-Passwort</strong>.
+    </div>
+
+    {providers.map((p) => (
+      <section class="mt-12">
+        <h2 class="flex flex-wrap items-center gap-2">
+          {p.name}
+          {p.appPassword && (
+            <span class="not-prose inline-block rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+              App-Passwort nötig
+            </span>
+          )}
+        </h2>
+        <p class="not-prose mt-1 text-sm text-ink-500">
+          <span class="font-mono text-ink-700">IMAP-Server:</span> {p.host}
+          <span class="mx-2 text-ink-300">·</span>
+          <span class="font-mono text-ink-700">Port:</span> {p.port}
+        </p>
+        <ol class="mt-3">
+          {p.steps.map((s) => <li>{s}</li>)}
+        </ol>
+        {p.link && (
+          <p class="not-prose mt-2 text-sm">
+            <a href={p.link.url} class="text-brand-700 hover:underline" target="_blank" rel="noopener">
+              {p.link.label} ↗
+            </a>
+          </p>
+        )}
+      </section>
+    ))}
+
+    <h2 class="mt-16">Verbindung klappt nicht?</h2>
+    <ul>
+      <li>Prüfe, ob IMAP im Webmail deines Anbieters aktiviert ist.</li>
+      <li>Nutze bei Gmail, Outlook 365, iCloud und Yahoo zwingend ein App-Passwort, nicht das Login-Passwort.</li>
+      <li>Verwende Port 993 mit SSL/TLS. Achte auf Tippfehler in Serveradresse und E-Mail.</li>
+      <li>Bei eigenem Mailserver: frage deinen Hoster nach dem korrekten IMAP-Host und SSL-Port.</li>
+    </ul>
+    <p>
+      Kommst du nicht weiter? Schreib uns an
+      <a href="mailto:support@billsorter.app" class="text-brand-700">support@billsorter.app</a>.
+    </p>
+
+    <a href="/" class="mt-12 inline-block text-brand-700 hover:underline">← Home</a>
+  </article>
+
+  <style>
+    .prose h2 { font-size: 1.5rem; font-weight: 700; }
+    .prose p, .prose ul, .prose ol { line-height: 1.7; }
+    .prose ul { padding-left: 1.25rem; list-style: disc; }
+    .prose ol { padding-left: 1.25rem; list-style: decimal; }
+    .prose li { margin-top: 0.35rem; }
+  </style>
+</Base>
